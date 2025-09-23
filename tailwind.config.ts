@@ -57,6 +57,13 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        lang: {
+          english: "hsl(var(--lang-english))",
+          chinese: "hsl(var(--lang-chinese))",
+          spanish: "hsl(var(--lang-spanish))",
+          french: "hsl(var(--lang-french))",
+          japanese: "hsl(var(--lang-japanese))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
