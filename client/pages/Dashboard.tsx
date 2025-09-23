@@ -56,7 +56,7 @@ export default function Dashboard() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="font-medium truncate">{l.name}</div>
-                      <Progress value={l.progress} className="h-2 mt-2" />
+                      <Progress value={l.progress} className="h-2 mt-2" style={{ ["--progress-color"]: `hsl(var(${l.colorVar}))` } as React.CSSProperties} />
                     </div>
                   </div>
                 </CardContent>
