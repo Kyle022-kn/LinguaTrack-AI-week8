@@ -11,6 +11,8 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Placeholder from "./pages/Placeholder";
+import Challenge from "./pages/Challenge";
+import Progress from "./pages/Progress";
 import MainLayout from "@/components/MainLayout";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 
@@ -36,10 +38,10 @@ const App = () => (
             <Route element={<RequireAuth />}>
               <Route element={<MainLayout /> }>
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/challenge" element={<Placeholder title="Daily Challenge" description="Gamified quizzes with instant feedback." />} />
+                <Route path="/challenge" element={<Challenge />} />
                 <Route path="/lessons" element={<Placeholder title="Lessons" description="Practice and Quiz modes for each language." />} />
                 <Route path="/lessons/:lang" element={<Placeholder title="Lesson Detail" description="Topic overview, Practice and Quiz." />} />
-                <Route path="/progress" element={<Placeholder title="Progress" description="Charts, badges, and milestones." />} />
+                <Route path="/progress" element={<Progress />} />
                 <Route path="/journal" element={<Placeholder title="AI Journaling" description="Write entries and get AI corrections." />} />
                 <Route path="/admin" element={<Placeholder title="Admin Panel" description="Manage Lessons, Challenges, Community and Users." />} />
                 <Route path="/community" element={<Placeholder title="Community" description="Leaderboards and forums coming soon." />} />
