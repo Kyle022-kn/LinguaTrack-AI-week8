@@ -21,8 +21,15 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 258 85% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Language accent hues */
+    --lang-english: 217 90% 56%;
+    --lang-chinese: 0 75% 55%;
+    --lang-spanish: 142 60% 45%;
+    --lang-french: 262 70% 55%;
+    --lang-japanese: 28 90% 55%;
 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
