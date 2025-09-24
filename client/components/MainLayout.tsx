@@ -1,7 +1,10 @@
-import { Flame, Home, LineChart, NotebookPen, SquarePen, UserCog } from "lucide-react";
-import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { Flame, Home, LineChart, LogOut, NotebookPen, Settings as SettingsIcon, SquarePen, User, UserCog } from "lucide-react";
+import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
+import ThemeToggle from "@/components/ThemeToggle";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 export default function MainLayout() {
   const { user } = useAuth();
@@ -34,6 +37,8 @@ export default function MainLayout() {
             {user?.role === "admin" && (
               <NavLink to="/admin" className={({ isActive }) => cn("rounded-full px-2 py-1 text-xs font-medium border", isActive ? "bg-primary text-primary-foreground border-transparent" : "bg-background hover:bg-accent")}>Admin</NavLink>
             )}
+            <ThemeToggle />
+            <UserMenu />
           </div>
         </div>
       </header>

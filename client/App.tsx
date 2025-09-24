@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeProvider } from "next-themes";
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -13,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import Placeholder from "./pages/Placeholder";
 import Challenge from "./pages/Challenge";
 import Progress from "./pages/Progress";
+import Settings from "./pages/Settings";
 import MainLayout from "@/components/MainLayout";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 
@@ -46,6 +48,7 @@ const App = () => (
                 <Route path="/admin" element={<Placeholder title="Admin Panel" description="Manage Lessons, Challenges, Community and Users." />} />
                 <Route path="/community" element={<Placeholder title="Community" description="Leaderboards and forums coming soon." />} />
                 <Route path="/profile" element={<Placeholder title="Profile" description="Achievements, badges, and settings." />} />
+                <Route path="/settings" element={<Settings />} />
                 <Route path="/support" element={<Placeholder title="Support" description="Help center and FAQs." />} />
               </Route>
             </Route>
