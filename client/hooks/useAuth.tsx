@@ -29,11 +29,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   }, []);
 
-  const login = useCallback((args: { email: string; password: string; role: UserRole; name?: string }) => {
-    const { email, role, name } = args;
-    const u: User = { email, role, name: name || email.split("@")[0] };
+  const login = useCallback(async (args: { email: string; password: string }) => {
+    const { verify, getUser } = await import("@/lib/authStore");
+    const found = await verify(args.email, args.password);
+    if (!found) return false;
+    const u: User = { email: found.email, role: found.role, name: found.name };
     setUser(u);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
+    return true;
+  }, []);
+
+  const register = useCallback(async (args: { email: string; password: string; role: UserRole; name: string }) => {
+    const { addUser } = await import("@/lib/authStore");
+    try {
+      await addUser(args);
+      const u: User = { email: args.email, role: args.role, name: args.name };
+      setUser(u);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
+      return true;
+    } catch {
+      return false;
+    }
   }, []);
 
   const logout = useCallback(() => {
