@@ -28,7 +28,8 @@ function RequireAuth() {
 
 const App = () => (
   <BrowserRouter>
-    <QueryClientProvider client={queryClient}>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+      <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -58,6 +59,7 @@ const App = () => (
         </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
+    </ThemeProvider>
   </BrowserRouter>
 );
 
