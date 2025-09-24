@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-do
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/ThemeToggle";
+import Logo from "@/components/Logo";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 
@@ -21,8 +22,8 @@ export default function MainLayout() {
       <header className="sticky top-0 z-20 backdrop-blur supports-[backdrop-filter]:bg-background/70 border-b">
         <div className="mx-auto max-w-md px-4 py-3 flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-2">
-            <div className="size-8 rounded-xl bg-primary/10 grid place-items-center overflow-hidden">
-              <img src="https://cdn.builder.io/api/v1/image/assets%2F1b2d7c271ecd40479bc581ae92b8cbf0%2F9cf768a4bd45464fa266f63a9addb083?format=webp&width=800" alt="LinguaTrack AI logo" className="w-full h-full object-contain" />
+            <div className="size-8 rounded-xl bg-primary/10 grid place-items-center">
+              <Logo className="w-5 h-5 text-primary" />
             </div>
             <div className="leading-tight">
               <div className="font-extrabold tracking-tight">LinguaTrack AI</div>

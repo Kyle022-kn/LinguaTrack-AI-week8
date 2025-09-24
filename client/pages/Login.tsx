@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { LogIn, SquarePen } from "lucide-react";
+import Logo from "@/components/Logo";
 
 export default function Login() {
   const { login } = useAuth();
@@ -24,8 +25,8 @@ export default function Login() {
     <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background">
       <div className="mx-auto max-w-md px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
-          <div className="size-10 rounded-2xl bg-primary/15 grid place-items-center overflow-hidden">
-            <img src="https://cdn.builder.io/api/v1/image/assets%2F1b2d7c271ecd40479bc581ae92b8cbf0%2F9cf768a4bd45464fa266f63a9addb083?format=webp&width=800" alt="LinguaTrack AI logo" className="w-full h-full object-contain" />
+          <div className="size-10 rounded-2xl bg-primary/15 grid place-items-center">
+            <Logo className="w-7 h-7 text-primary" />
           </div>
           <div>
             <h1 className="text-2xl font-extrabold tracking-tight">LinguaTrack AI</h1>
