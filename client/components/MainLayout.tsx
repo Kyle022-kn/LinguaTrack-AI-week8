@@ -74,3 +74,29 @@ export default function MainLayout() {
     </div>
   );
 }
+
+function UserMenu() {
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const initials = (user?.name || user?.email || "U").slice(0, 1).toUpperCase();
+  const onLogout = () => {
+    logout();
+    toast.success("Signed out");
+    navigate("/login", { replace: true });
+  };
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger className="rounded-full border size-9 grid place-items-center bg-background hover:bg-accent">
+        <span className="text-sm font-semibold">{initials}</span>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuLabel>{user?.name || user?.email || "Account"}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => navigate('/profile')}><User className="mr-2 size-4" /> Profile</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate('/settings')}><SettingsIcon className="mr-2 size-4" /> Settings</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={onLogout} className="text-red-600"><LogOut className="mr-2 size-4" /> Logout</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
