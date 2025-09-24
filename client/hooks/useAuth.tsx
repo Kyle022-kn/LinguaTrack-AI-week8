@@ -10,7 +10,8 @@ export type User = {
 
 type AuthContextValue = {
   user: User | null;
-  login: (args: { email: string; password: string; role: UserRole; name?: string }) => void;
+  login: (args: { email: string; password: string }) => Promise<boolean>;
+  register: (args: { email: string; password: string; role: UserRole; name: string }) => Promise<boolean>;
   logout: () => void;
 };
 
