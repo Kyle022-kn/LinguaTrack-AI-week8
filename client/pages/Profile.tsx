@@ -58,15 +58,12 @@ export default function Profile() {
   };
 
   const changePassword = async () => {
+    if (!user) return;
     if (newPw.length < 8) return toast.error("Password too short", { description: "Use at least 8 characters." });
     if (newPw !== confirmPw) return toast.error("Passwords do not match");
-    const stored = localStorage.getItem(PW_KEY);
-    if (stored) {
-      const curHash = await sha256Hex(currentPw);
-      if (curHash !== stored) return toast.error("Current password is incorrect");
-    }
-    const next = await sha256Hex(newPw);
-    localStorage.setItem(PW_KEY, next);
+    const { updatePassword } = await import("@/lib/authStore");
+    const ok = await updatePassword(user.email, currentPw, newPw);
+    if (!ok) return toast.error("Current password is incorrect");
     setCurrentPw(""); setNewPw(""); setConfirmPw("");
     toast.success("Password updated");
   };
