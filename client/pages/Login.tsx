@@ -14,10 +14,10 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    login({ email, password, role });
-    navigate("/dashboard");
+    const ok = await login({ email, password });
+    if (ok) navigate("/dashboard");
   };
 
   return (
