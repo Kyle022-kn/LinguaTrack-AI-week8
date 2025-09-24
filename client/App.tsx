@@ -14,6 +14,11 @@ import Dashboard from "./pages/Dashboard";
 import Placeholder from "./pages/Placeholder";
 import Challenge from "./pages/Challenge";
 import Progress from "./pages/Progress";
+import Lessons from "./pages/Lessons";
+import LessonDetail from "./pages/LessonDetail";
+import Profile from "./pages/Profile";
+import Support from "./pages/Support";
+import Journal from "./pages/Journal";
 import Settings from "./pages/Settings";
 import MainLayout from "@/components/MainLayout";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
@@ -42,15 +47,15 @@ const App = () => (
               <Route element={<MainLayout /> }>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/challenge" element={<Challenge />} />
-                <Route path="/lessons" element={<Placeholder title="Lessons" description="Practice and Quiz modes for each language." />} />
-                <Route path="/lessons/:lang" element={<Placeholder title="Lesson Detail" description="Topic overview, Practice and Quiz." />} />
+                <Route path="/lessons" element={<Lessons />} />
+                <Route path="/lessons/:lang" element={<LessonDetail />} />
                 <Route path="/progress" element={<Progress />} />
-                <Route path="/journal" element={<Placeholder title="AI Journaling" description="Write entries and get AI corrections." />} />
+                <Route path="/journal" element={<Journal />} />
                 <Route path="/admin" element={<Placeholder title="Admin Panel" description="Manage Lessons, Challenges, Community and Users." />} />
                 <Route path="/community" element={<Placeholder title="Community" description="Leaderboards and forums coming soon." />} />
-                <Route path="/profile" element={<Placeholder title="Profile" description="Achievements, badges, and settings." />} />
+                <Route path="/profile" element={<Profile />} />
                 <Route path="/settings" element={<Settings />} />
-                <Route path="/support" element={<Placeholder title="Support" description="Help center and FAQs." />} />
+                <Route path="/support" element={<Support />} />
               </Route>
             </Route>
 
