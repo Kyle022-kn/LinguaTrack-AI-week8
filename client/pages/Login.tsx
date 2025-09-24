@@ -54,7 +54,10 @@ export default function Login() {
             <Button type="submit" className="w-full h-12 text-base font-semibold">
               <LogIn className="mr-2 size-5" /> Sign in
             </Button>
-            <p className="text-center text-sm text-muted-foreground">No account? Sign up free</p>
+            <div className="flex items-center justify-between text-sm">
+              <a className="text-primary" href="/forgot">Forgot password?</a>
+              <a className="text-primary" href="/signup">No account? Sign up</a>
+            </div>
           </form>
         </div>
       </div>
