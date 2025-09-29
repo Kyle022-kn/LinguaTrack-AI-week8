@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { CheckCircle2, UserPlus } from "lucide-react";
+import BackButton from "@/components/BackButton";
 import { toast } from "sonner";
 
 function scorePassword(pw: string) {
@@ -36,6 +37,9 @@ export default function SignUp() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background">
       <div className="mx-auto max-w-md px-6 py-10">
+        <div className="mb-4">
+          <BackButton />
+        </div>
         <div className="flex items-center gap-3 mb-8">
           <div className="size-10 rounded-2xl bg-primary/15 grid place-items-center">
             <UserPlus className="size-6 text-primary" />
