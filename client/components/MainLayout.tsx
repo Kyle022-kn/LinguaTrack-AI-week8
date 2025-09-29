@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/ThemeToggle";
 import Logo from "@/components/Logo";
+import BackButton from "@/components/BackButton";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 
@@ -21,7 +22,9 @@ export default function MainLayout() {
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/40 text-foreground">
       <header className="sticky top-0 z-20 backdrop-blur supports-[backdrop-filter]:bg-background/70 border-b">
         <div className="mx-auto max-w-md px-4 py-3 flex items-center justify-between">
-          <Link to="/dashboard" className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
+            <BackButton />
+            <Link to="/dashboard" className="flex items-center gap-2">
             <div className="size-8 rounded-xl bg-primary/10 grid place-items-center">
               <Logo className="w-5 h-5 text-primary" />
             </div>
@@ -30,6 +33,7 @@ export default function MainLayout() {
               <div className="text-xs text-muted-foreground">Personalized Learning</div>
             </div>
           </Link>
+          </div>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-1 text-amber-600">
               <Flame className="size-4" />
