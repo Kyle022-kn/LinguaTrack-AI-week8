@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { LogIn, SquarePen } from "lucide-react";
+import { LogIn, ArrowLeft } from "lucide-react";
 import Logo from "@/components/Logo";
 
 export default function Login() {
@@ -24,6 +24,11 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background">
       <div className="mx-auto max-w-md px-6 py-10">
+        <div className="mb-4">
+          <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="-ml-2">
+            <ArrowLeft className="mr-1 h-4 w-4" /> Back
+          </Button>
+        </div>
         <div className="flex items-center gap-3 mb-8">
           <div className="size-10 rounded-2xl bg-primary/15 grid place-items-center">
             <Logo className="w-7 h-7 text-primary" />
