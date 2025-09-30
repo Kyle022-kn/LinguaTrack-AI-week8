@@ -29,8 +29,12 @@ export default function Login() {
             <Logo className="w-7 h-7 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl font-extrabold tracking-tight">LinguaTrack AI</h1>
-            <p className="text-sm text-muted-foreground">Personalized Learning, Smarter & Faster</p>
+            <h1 className="text-2xl font-extrabold tracking-tight">
+              LinguaTrack AI
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Personalized Learning, Smarter & Faster
+            </p>
           </div>
         </div>
 
@@ -39,25 +43,54 @@ export default function Login() {
           <form onSubmit={onSubmit} className="space-y-4">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
             </div>
             <div className="grid gap-2">
               <Label>Select role</Label>
-              <ToggleGroup type="single" value={role} onValueChange={(v) => v && setRole(v as UserRole)} className="w-full">
-                <ToggleGroupItem value="learner" className="flex-1">Learner</ToggleGroupItem>
-                <ToggleGroupItem value="admin" className="flex-1">Admin</ToggleGroupItem>
+              <ToggleGroup
+                type="single"
+                value={role}
+                onValueChange={(v) => v && setRole(v as UserRole)}
+                className="w-full"
+              >
+                <ToggleGroupItem value="learner" className="flex-1">
+                  Learner
+                </ToggleGroupItem>
+                <ToggleGroupItem value="admin" className="flex-1">
+                  Admin
+                </ToggleGroupItem>
               </ToggleGroup>
             </div>
-            <Button type="submit" className="w-full h-12 text-base font-semibold">
+            <Button
+              type="submit"
+              className="w-full h-12 text-base font-semibold"
+            >
               <LogIn className="mr-2 size-5" /> Sign in
             </Button>
             <div className="flex items-center justify-between text-sm">
-              <a className="text-primary" href="/forgot">Forgot password?</a>
-              <a className="text-primary" href="/signup">No account? Sign up</a>
+              <a className="text-primary" href="/forgot">
+                Forgot password?
+              </a>
+              <a className="text-primary" href="/signup">
+                No account? Sign up
+              </a>
             </div>
           </form>
         </div>

@@ -1,11 +1,34 @@
-import { Flame, Home, LineChart, LogOut, NotebookPen, Settings as SettingsIcon, SquarePen, User, UserCog } from "lucide-react";
-import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import {
+  Flame,
+  Home,
+  LineChart,
+  LogOut,
+  NotebookPen,
+  Settings as SettingsIcon,
+  SquarePen,
+  User,
+  UserCog,
+} from "lucide-react";
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/ThemeToggle";
 import Logo from "@/components/Logo";
 import BackButton from "@/components/BackButton";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 
 export default function MainLayout() {
@@ -25,14 +48,18 @@ export default function MainLayout() {
           <div className="flex items-center gap-2">
             {location.pathname !== "/dashboard" && <BackButton />}
             <Link to="/dashboard" className="flex items-center gap-2">
-            <div className="size-8 rounded-xl bg-primary/10 grid place-items-center">
-              <Logo className="w-5 h-5 text-primary" />
-            </div>
-            <div className="leading-tight">
-              <div className="font-extrabold tracking-tight">LinguaTrack AI</div>
-              <div className="text-xs text-muted-foreground">Personalized Learning</div>
-            </div>
-          </Link>
+              <div className="size-8 rounded-xl bg-primary/10 grid place-items-center">
+                <Logo className="w-5 h-5 text-primary" />
+              </div>
+              <div className="leading-tight">
+                <div className="font-extrabold tracking-tight">
+                  LinguaTrack AI
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Personalized Learning
+                </div>
+              </div>
+            </Link>
           </div>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-1 text-amber-600">
@@ -40,7 +67,19 @@ export default function MainLayout() {
               <span className="text-xs font-semibold">7 day streak</span>
             </div>
             {user?.role === "admin" && (
-              <NavLink to="/admin" className={({ isActive }) => cn("rounded-full px-2 py-1 text-xs font-medium border", isActive ? "bg-primary text-primary-foreground border-transparent" : "bg-background hover:bg-accent")}>Admin</NavLink>
+              <NavLink
+                to="/admin"
+                className={({ isActive }) =>
+                  cn(
+                    "rounded-full px-2 py-1 text-xs font-medium border",
+                    isActive
+                      ? "bg-primary text-primary-foreground border-transparent"
+                      : "bg-background hover:bg-accent",
+                  )
+                }
+              >
+                Admin
+              </NavLink>
             )}
             <ThemeToggle />
             <UserMenu />
@@ -64,7 +103,9 @@ export default function MainLayout() {
                   className={({ isActive }) =>
                     cn(
                       "flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-medium",
-                      isActive ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-accent text-foreground"
+                      isActive
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted hover:bg-accent text-foreground",
                     )
                   }
                 >
@@ -95,12 +136,20 @@ function UserMenu() {
         <span className="text-sm font-semibold">{initials}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuLabel>{user?.name || user?.email || "Account"}</DropdownMenuLabel>
+        <DropdownMenuLabel>
+          {user?.name || user?.email || "Account"}
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => navigate('/profile')}><User className="mr-2 size-4" /> Profile</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate('/settings')}><SettingsIcon className="mr-2 size-4" /> Settings</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate("/profile")}>
+          <User className="mr-2 size-4" /> Profile
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate("/settings")}>
+          <SettingsIcon className="mr-2 size-4" /> Settings
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onLogout} className="text-red-600"><LogOut className="mr-2 size-4" /> Logout</DropdownMenuItem>
+        <DropdownMenuItem onClick={onLogout} className="text-red-600">
+          <LogOut className="mr-2 size-4" /> Logout
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
