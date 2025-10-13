@@ -65,7 +65,7 @@ const App = () => (
                 <Route path="/progress" element={<Progress />} />
                 <Route path="/journal" element={<Journal />} />
                 <Route element={<RequireAdmin />}>
-                  <Route path="/admin" element={<Placeholder title="Admin Panel" description="Manage Lessons, Challenges, Community and Users." />} />
+                  <Route path="/admin" element={<Admin />} />
                 </Route>
                 <Route path="/community" element={<Placeholder title="Community" description="Leaderboards and forums coming soon." />} />
                 <Route path="/profile" element={<Profile />} />
