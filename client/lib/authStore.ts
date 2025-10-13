@@ -6,6 +6,7 @@ export type StoredUser = {
   role: UserRole;
   passwordHash: string;
   createdAt: number;
+  suspended?: boolean;
 };
 
 const KEY = "ltai_users";
@@ -25,7 +26,7 @@ export async function addUser(args: { email: string; name: string; role: UserRol
   const email = args.email.toLowerCase();
   if (users[email]) throw new Error("Account already exists");
   const passwordHash = await sha256Hex(args.password);
-  users[email] = { email, name: args.name, role: args.role, passwordHash, createdAt: Date.now() };
+  users[email] = { email, name: args.name, role: args.role, passwordHash, createdAt: Date.now(), suspended: false };
   save(users);
 }
 
@@ -33,6 +34,7 @@ export async function verify(email: string, password: string) {
   const users = load();
   const u = users[email.toLowerCase()];
   if (!u) return null;
+  if (u.suspended) return null;
   const hash = await sha256Hex(password);
   if (hash !== u.passwordHash) return null;
   return u;
@@ -41,6 +43,20 @@ export async function verify(email: string, password: string) {
 export function getUser(email: string) {
   const users = load();
   return users[email.toLowerCase()] || null;
+}
+
+export function listUsers(): StoredUser[] {
+  const users = load();
+  return Object.values(users).sort((a, b) => a.createdAt - b.createdAt);
+}
+
+export function removeUser(email: string) {
+  const users = load();
+  const key = email.toLowerCase();
+  if (!users[key]) return false;
+  delete users[key];
+  save(users);
+  return true;
 }
 
 export function updateProfile(email: string, patch: Partial<Omit<StoredUser, "email" | "passwordHash" | "createdAt">>) {
