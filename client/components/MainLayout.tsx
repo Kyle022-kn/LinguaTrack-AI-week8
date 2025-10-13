@@ -35,11 +35,17 @@ export default function MainLayout() {
   const { user } = useAuth();
   const location = useLocation();
 
-  const nav = [
-    { to: "/dashboard", label: "Home", icon: Home },
-    { to: "/progress", label: "Progress", icon: LineChart },
-    { to: "/journal", label: "Journal", icon: NotebookPen },
-  ];
+  const nav = user?.role === "admin"
+    ? [
+        { to: "/dashboard", label: "Home", icon: Home },
+        { to: "/admin", label: "Admin", icon: UserCog },
+        { to: "/journal", label: "Journal", icon: NotebookPen },
+      ]
+    : [
+        { to: "/dashboard", label: "Home", icon: Home },
+        { to: "/progress", label: "Progress", icon: LineChart },
+        { to: "/journal", label: "Journal", icon: NotebookPen },
+      ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/40 text-foreground">
