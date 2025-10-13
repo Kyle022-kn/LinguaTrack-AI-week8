@@ -15,6 +15,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Placeholder from "./pages/Placeholder";
+import Admin from "./pages/Admin";
 import Challenge from "./pages/Challenge";
 import Progress from "./pages/Progress";
 import Lessons from "./pages/Lessons";
