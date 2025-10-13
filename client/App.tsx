@@ -6,7 +6,13 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+} from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -46,40 +52,48 @@ const App = () => (
   <BrowserRouter>
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
       <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/forgot" element={<ForgotPassword />} />
-            <Route path="/reset" element={<ResetPassword />} />
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <AuthProvider>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/forgot" element={<ForgotPassword />} />
+              <Route path="/reset" element={<ResetPassword />} />
 
-            <Route element={<RequireAuth />}>
-              <Route element={<MainLayout /> }>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/challenge" element={<Challenge />} />
-                <Route path="/lessons" element={<Lessons />} />
-                <Route path="/lessons/:lang" element={<LessonDetail />} />
-                <Route path="/progress" element={<Progress />} />
-                <Route path="/journal" element={<Journal />} />
-                <Route element={<RequireAdmin />}>
-                  <Route path="/admin" element={<Admin />} />
+              <Route element={<RequireAuth />}>
+                <Route element={<MainLayout />}>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/challenge" element={<Challenge />} />
+                  <Route path="/lessons" element={<Lessons />} />
+                  <Route path="/lessons/:lang" element={<LessonDetail />} />
+                  <Route path="/progress" element={<Progress />} />
+                  <Route path="/journal" element={<Journal />} />
+                  <Route element={<RequireAdmin />}>
+                    <Route path="/admin" element={<Admin />} />
+                  </Route>
+                  <Route
+                    path="/community"
+                    element={
+                      <Placeholder
+                        title="Community"
+                        description="Leaderboards and forums coming soon."
+                      />
+                    }
+                  />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/support" element={<Support />} />
                 </Route>
-                <Route path="/community" element={<Placeholder title="Community" description="Leaderboards and forums coming soon." />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/support" element={<Support />} />
               </Route>
-            </Route>
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AuthProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AuthProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
     </ThemeProvider>
   </BrowserRouter>
 );
