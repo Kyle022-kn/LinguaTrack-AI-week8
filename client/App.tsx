@@ -34,6 +34,13 @@ function RequireAuth() {
   return <Outlet />;
 }
 
+function RequireAdmin() {
+  const { user } = useAuth();
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role !== "admin") return <Navigate to="/dashboard" replace />;
+  return <Outlet />;
+}
+
 const App = () => (
   <BrowserRouter>
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
@@ -57,7 +64,9 @@ const App = () => (
                 <Route path="/lessons/:lang" element={<LessonDetail />} />
                 <Route path="/progress" element={<Progress />} />
                 <Route path="/journal" element={<Journal />} />
-                <Route path="/admin" element={<Placeholder title="Admin Panel" description="Manage Lessons, Challenges, Community and Users." />} />
+                <Route element={<RequireAdmin />}>
+                  <Route path="/admin" element={<Placeholder title="Admin Panel" description="Manage Lessons, Challenges, Community and Users." />} />
+                </Route>
                 <Route path="/community" element={<Placeholder title="Community" description="Leaderboards and forums coming soon." />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/settings" element={<Settings />} />
