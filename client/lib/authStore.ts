@@ -12,21 +12,45 @@ export type StoredUser = {
 const KEY = "ltai_users";
 
 function load(): Record<string, StoredUser> {
-  try { const raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : {}; } catch { return {}; }
+  try {
+    const raw = localStorage.getItem(KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
 }
-function save(map: Record<string, StoredUser>) { localStorage.setItem(KEY, JSON.stringify(map)); }
+function save(map: Record<string, StoredUser>) {
+  localStorage.setItem(KEY, JSON.stringify(map));
+}
 
 export async function sha256Hex(text: string) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
-  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+  const buf = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(text),
+  );
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
-export async function addUser(args: { email: string; name: string; role: UserRole; password: string }) {
+export async function addUser(args: {
+  email: string;
+  name: string;
+  role: UserRole;
+  password: string;
+}) {
   const users = load();
   const email = args.email.toLowerCase();
   if (users[email]) throw new Error("Account already exists");
   const passwordHash = await sha256Hex(args.password);
-  users[email] = { email, name: args.name, role: args.role, passwordHash, createdAt: Date.now(), suspended: false };
+  users[email] = {
+    email,
+    name: args.name,
+    role: args.role,
+    passwordHash,
+    createdAt: Date.now(),
+    suspended: false,
+  };
   save(users);
 }
 
@@ -59,7 +83,10 @@ export function removeUser(email: string) {
   return true;
 }
 
-export function updateProfile(email: string, patch: Partial<Omit<StoredUser, "email" | "passwordHash" | "createdAt">>) {
+export function updateProfile(
+  email: string,
+  patch: Partial<Omit<StoredUser, "email" | "passwordHash" | "createdAt">>,
+) {
   const users = load();
   const key = email.toLowerCase();
   if (!users[key]) return false;
@@ -68,7 +95,11 @@ export function updateProfile(email: string, patch: Partial<Omit<StoredUser, "em
   return true;
 }
 
-export async function updatePassword(email: string, currentPassword: string, newPassword: string) {
+export async function updatePassword(
+  email: string,
+  currentPassword: string,
+  newPassword: string,
+) {
   const users = load();
   const key = email.toLowerCase();
   const u = users[key];
