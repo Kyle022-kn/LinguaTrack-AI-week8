@@ -31,6 +31,11 @@ export function createServer() {
     const { handleLogin } = await import("./routes/auth");
     return handleLogin(req, res, next);
   });
+
+  app.post("/api/auth/logout", async (req, res, next) => {
+    const { handleLogout } = await import("./routes/auth");
+    return handleLogout(req, res, next);
+  });
   
   app.get("/api/auth/user/:id", async (req, res, next) => {
     const { handleGetUser } = await import("./routes/auth");

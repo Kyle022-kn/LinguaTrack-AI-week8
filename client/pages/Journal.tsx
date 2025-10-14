@@ -71,20 +71,18 @@ export default function Journal() {
 
     setIsAnalyzing(true);
     try {
-      const userData = localStorage.getItem("ltai_user");
-      if (!userData) {
+      const sessionToken = localStorage.getItem("ltai_session");
+      if (!sessionToken) {
         toast.error("Please sign in to use AI features");
+        setIsAnalyzing(false);
         return;
       }
-
-      const userObj = JSON.parse(userData);
-      const userId = userObj.id || userObj.email;
 
       const response = await fetch("/api/ai/analyze-journal", {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${userId}`
+          "Authorization": `Bearer ${sessionToken}`
         },
         body: JSON.stringify({ text, targetLanguage: targetLang }),
       });
@@ -114,20 +112,17 @@ export default function Journal() {
     }
 
     try {
-      const userData = localStorage.getItem("ltai_user");
-      if (!userData) {
+      const sessionToken = localStorage.getItem("ltai_session");
+      if (!sessionToken) {
         toast.error("Please sign in to use AI features");
         return;
       }
-
-      const userObj = JSON.parse(userData);
-      const userId = userObj.id || userObj.email;
 
       const response = await fetch("/api/ai/generate-prompts", {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${userId}`
+          "Authorization": `Bearer ${sessionToken}`
         },
         body: JSON.stringify({ language: targetLang, level: "beginner" }),
       });

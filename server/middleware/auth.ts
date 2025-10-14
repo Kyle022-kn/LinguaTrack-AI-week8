@@ -14,13 +14,14 @@ export const requireAuth: RequestHandler = async (req, res, next) => {
       return res.status(401).json({ error: "Unauthorized - Invalid token" });
     }
 
-    const { storage } = await import("../storage");
-    const userId = parseInt(token);
+    const { validateSession } = await import("../sessions");
+    const userId = validateSession(token);
     
-    if (isNaN(userId)) {
-      return res.status(401).json({ error: "Unauthorized - Invalid user ID" });
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized - Invalid or expired session" });
     }
 
+    const { storage } = await import("../storage");
     const user = await storage.getUser(userId);
     
     if (!user) {
