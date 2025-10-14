@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 
-export function createServer() {
+export async function createServer() {
   const app = express();
 
   // Middleware
@@ -76,16 +76,16 @@ export function createServer() {
   });
 
   // AI Exercise routes (protected with auth and rate limiting - 15 requests/minute)
-  app.use("/api/ai/exercises", async (req, res, next) => {
-    const exerciseRouter = await import("./routes/ai-exercises");
-    return exerciseRouter.default(req, res, next);
-  });
+  const { default: exerciseRouter } = await import("./routes/ai-exercises");
+  app.use("/api/ai/exercises", exerciseRouter);
+
+  // AI Lesson routes (protected with auth and rate limiting - 10 requests/minute)
+  const { default: lessonRouter } = await import("./routes/ai-lessons");
+  app.use("/api/ai/lessons", lessonRouter);
 
   // Progress and XP routes (protected with auth)
-  app.use("/api/progress", async (req, res, next) => {
-    const progressRouter = await import("./routes/progress");
-    return progressRouter.default(req, res, next);
-  });
+  const { default: progressRouter } = await import("./routes/progress");
+  app.use("/api/progress", progressRouter);
 
   return app;
 }

@@ -6,17 +6,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LogIn } from "lucide-react";
 import Logo from "@/components/Logo";
+import { toast } from "sonner";
 
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const ok = await login({ email, password });
-    if (ok) navigate("/dashboard");
+    setLoading(true);
+    const result = await login({ email, password });
+    setLoading(false);
+    
+    if (result.success === false) {
+      toast.error(result.error);
+      return;
+    }
+    
+    toast.success("Welcome back!");
+    navigate("/dashboard");
   };
 
   return (
@@ -63,8 +74,9 @@ export default function Login() {
             <Button
               type="submit"
               className="w-full h-12 text-base font-semibold"
+              disabled={loading}
             >
-              <LogIn className="mr-2 size-5" /> Sign in
+              <LogIn className="mr-2 size-5" /> {loading ? "Signing in..." : "Sign in"}
             </Button>
             <div className="flex items-center justify-between text-sm">
               <a className="text-primary" href="/forgot">
