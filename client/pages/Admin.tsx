@@ -45,12 +45,18 @@ export default function Admin() {
       const sb = getSupabase();
       if (sb) {
         const { data: recentRows } = await sb
-          .from('journal_entries')
-          .select('id,ts')
-          .order('ts', { ascending: false })
+          .from("journal_entries")
+          .select("id,ts")
+          .order("ts", { ascending: false })
           .limit(5);
-        journal = (recentRows || []).map((r: any) => ({ id: String(r.id), text: '', ts: new Date(r.ts).getTime() }));
-        const { count } = await sb.from('journal_entries').select('*', { count: 'exact', head: true });
+        journal = (recentRows || []).map((r: any) => ({
+          id: String(r.id),
+          text: "",
+          ts: new Date(r.ts).getTime(),
+        }));
+        const { count } = await sb
+          .from("journal_entries")
+          .select("*", { count: "exact", head: true });
         journalCount = count || journal.length;
       } else {
         try {
@@ -61,20 +67,16 @@ export default function Admin() {
       }
 
       const recent = [
-        ...us
-          .slice(-5)
-          .map((u) => ({
-            type: "signup",
-            label: `${u.email} joined`,
-            ts: u.createdAt,
-          })),
-        ...journal
-          .slice(0, 5)
-          .map((e) => ({
-            type: "journal",
-            label: `Journal entry ${new Date(e.ts).toLocaleString()}`,
-            ts: e.ts,
-          })),
+        ...us.slice(-5).map((u) => ({
+          type: "signup",
+          label: `${u.email} joined`,
+          ts: u.createdAt,
+        })),
+        ...journal.slice(0, 5).map((e) => ({
+          type: "journal",
+          label: `Journal entry ${new Date(e.ts).toLocaleString()}`,
+          ts: e.ts,
+        })),
       ]
         .sort((a, b) => b.ts - a.ts)
         .slice(0, 10);
@@ -87,12 +89,14 @@ export default function Admin() {
       });
 
       const supabase = getSupabase();
-      if (supabase && user?.role === 'admin') {
-        const { data } = await supabase.from('ai_prompts').select('language,prompt');
+      if (supabase && user?.role === "admin") {
+        const { data } = await supabase
+          .from("ai_prompts")
+          .select("language,prompt");
         const p: Record<string, string> = {};
         for (const l of LANGUAGES) {
           const row = (data || []).find((r: any) => r.language === l.key);
-          p[l.key] = row?.prompt || '';
+          p[l.key] = row?.prompt || "";
         }
         setPrompts(p);
       } else {
@@ -144,8 +148,10 @@ export default function Admin() {
 
   const savePrompt = async (langKey: string) => {
     const supabase = getSupabase();
-    if (supabase && user?.role === 'admin') {
-      await supabase.from('ai_prompts').upsert({ language: langKey, prompt: prompts[langKey] || '' });
+    if (supabase && user?.role === "admin") {
+      await supabase
+        .from("ai_prompts")
+        .upsert({ language: langKey, prompt: prompts[langKey] || "" });
       return;
     }
     const key = `ltai_prompt_${langKey}`;
