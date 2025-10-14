@@ -80,10 +80,14 @@ The app uses PostgreSQL with Drizzle ORM for user authentication and data persis
 - Schema defined in `shared/schema.ts`
 - Database config in `drizzle.config.ts`
 
-**API Endpoints:**
+**Authentication API:**
 - `POST /api/auth/register` - Create new user account
 - `POST /api/auth/login` - Authenticate user
 - `GET /api/auth/user/:id` - Get user by ID
+
+**AI Journal API (Protected):**
+- `POST /api/ai/analyze-journal` - AI grammar/vocabulary analysis (requires auth, 10 req/min limit)
+- `POST /api/ai/generate-prompts` - Generate writing prompts (requires auth, 5 req/min limit)
 
 ## Recent Changes (October 14, 2025)
 - Configured for Replit environment
@@ -95,6 +99,10 @@ The app uses PostgreSQL with Drizzle ORM for user authentication and data persis
 - **Set up database schema and storage layer**
 - **Connected frontend authentication to database API**
 - **Fixed critical security vulnerability: Server now enforces "learner" role for all new registrations (no client-controlled role assignment)**
+- **Integrated OpenAI for AI-powered journaling with grammar correction and vocabulary feedback**
+- **Added rich topic content with detailed learning materials for all languages**
+- **Implemented PWA capabilities for mobile app experience (manifest, service worker, install prompt)**
+- **Added authentication and rate limiting to AI endpoints (10 requests/min for analysis, 5 requests/min for prompts)**
 
 ## Configuration Notes
 - The Vite dev server is configured to work with Replit's proxy system
@@ -102,3 +110,5 @@ The app uses PostgreSQL with Drizzle ORM for user authentication and data persis
 - Frontend serves on 0.0.0.0:5000 to allow proxy access
 - Server files use relative imports (not path aliases) to avoid Vite config loading issues
 - Database uses standard PostgreSQL driver (pg) for compatibility with Replit
+- AI features use Replit AI Integrations (OpenAI-compatible) - charges billed to credits
+- PWA manifest and service worker enable offline capabilities and app installation

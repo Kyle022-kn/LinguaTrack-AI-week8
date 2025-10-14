@@ -37,15 +37,29 @@ export function createServer() {
     return handleGetUser(req, res, next);
   });
 
-  // AI Journal routes
+  // AI Journal routes (protected with auth and rate limiting)
   app.post("/api/ai/analyze-journal", async (req, res, next) => {
+    const { requireAuth, rateLimit } = await import("./middleware/auth");
     const { handleAnalyzeJournal } = await import("./routes/ai-journal");
-    return handleAnalyzeJournal(req, res, next);
+    return requireAuth(req, res, (err) => {
+      if (err) return next(err);
+      return rateLimit(10, 60000)(req, res, (err) => {
+        if (err) return next(err);
+        return handleAnalyzeJournal(req, res, next);
+      });
+    });
   });
 
   app.post("/api/ai/generate-prompts", async (req, res, next) => {
+    const { requireAuth, rateLimit } = await import("./middleware/auth");
     const { handleGeneratePrompts } = await import("./routes/ai-journal");
-    return handleGeneratePrompts(req, res, next);
+    return requireAuth(req, res, (err) => {
+      if (err) return next(err);
+      return rateLimit(5, 60000)(req, res, (err) => {
+        if (err) return next(err);
+        return handleGeneratePrompts(req, res, next);
+      });
+    });
   });
 
   return app;

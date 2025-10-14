@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { getSupabase } from "@/lib/supabase";
+import { useAuth } from "@/hooks/useAuth";
 import { Sparkles, Book, Lightbulb, Save, Wand2 } from "lucide-react";
 
 type Entry = { id: string; text: string; corrected?: string; ts: number };
@@ -19,6 +20,7 @@ type AIAnalysis = {
 const STORE_KEY = "ltai_journal";
 
 export default function Journal() {
+  const { user } = useAuth();
   const [text, setText] = useState("");
   const [history, setHistory] = useState<Entry[]>([]);
   const [analysis, setAnalysis] = useState<AIAnalysis | null>(null);
@@ -62,15 +64,38 @@ export default function Journal() {
       return;
     }
 
+    if (!user) {
+      toast.error("Please sign in to use AI features");
+      return;
+    }
+
     setIsAnalyzing(true);
     try {
+      const userData = localStorage.getItem("ltai_user");
+      if (!userData) {
+        toast.error("Please sign in to use AI features");
+        return;
+      }
+
+      const userObj = JSON.parse(userData);
+      const userId = userObj.id || userObj.email;
+
       const response = await fetch("/api/ai/analyze-journal", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${userId}`
+        },
         body: JSON.stringify({ text, targetLanguage: targetLang }),
       });
 
-      if (!response.ok) throw new Error("Analysis failed");
+      if (!response.ok) {
+        if (response.status === 429) {
+          toast.error("Rate limit exceeded. Please try again in a minute.");
+          return;
+        }
+        throw new Error("Analysis failed");
+      }
 
       const result = await response.json();
       setAnalysis(result);
@@ -83,14 +108,37 @@ export default function Journal() {
   };
 
   const getPrompts = async () => {
+    if (!user) {
+      toast.error("Please sign in to use AI features");
+      return;
+    }
+
     try {
+      const userData = localStorage.getItem("ltai_user");
+      if (!userData) {
+        toast.error("Please sign in to use AI features");
+        return;
+      }
+
+      const userObj = JSON.parse(userData);
+      const userId = userObj.id || userObj.email;
+
       const response = await fetch("/api/ai/generate-prompts", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${userId}`
+        },
         body: JSON.stringify({ language: targetLang, level: "beginner" }),
       });
 
-      if (!response.ok) throw new Error("Failed to get prompts");
+      if (!response.ok) {
+        if (response.status === 429) {
+          toast.error("Rate limit exceeded. Please try again in a minute.");
+          return;
+        }
+        throw new Error("Failed to get prompts");
+      }
 
       const result = await response.json();
       setPrompts(result.prompts || []);
