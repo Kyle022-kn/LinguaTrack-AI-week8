@@ -36,7 +36,7 @@ function expressPlugin(): Plugin {
     async configureServer(server) {
       // Lazy load createServer to avoid loading @shared imports during config
       const { createServer } = await import("./server/index.js");
-      const app = createServer();
+      const app = await createServer();
 
       // Add Express app as middleware to Vite dev server
       server.middlewares.use(app);
