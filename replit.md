@@ -116,12 +116,13 @@ The app uses PostgreSQL with Drizzle ORM for user authentication and data persis
 - **Set up database schema and storage layer**
 - **Connected frontend authentication to database API**
 - **Fixed critical security vulnerability: Server now enforces "learner" role for all new registrations (no client-controlled role assignment)**
-- **✅ AI INTEGRATION READY: Configured Replit AI Integrations for OpenAI**
+- **✅ AI INTEGRATION FULLY WORKING: Configured Replit AI Integrations for OpenAI**
   - Updated to use latest gpt-5-mini model (released August 7, 2025)
   - Proper environment variable configuration (AI_INTEGRATIONS_OPENAI_BASE_URL, AI_INTEGRATIONS_OPENAI_API_KEY)
   - No API key required - charges billed to Replit credits
   - AI-powered journaling with grammar correction and vocabulary feedback
   - AI exercise generation with JSON response format
+  - **Fixed localStorage key mismatch**: Updated AI Practice page to use correct session token key ("ltai_session")
 - **Added rich topic content with detailed learning materials for all 5 languages (Spanish, French, Japanese, Chinese, English)**
 - **Implemented PWA capabilities for mobile app experience (manifest, service worker, install prompt)**
 - **Added authentication and rate limiting to AI endpoints (10 requests/min for analysis, 5 requests/min for prompts, 15 requests/min for exercises)**
