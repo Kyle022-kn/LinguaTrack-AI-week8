@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { getSupabase } from "@/lib/supabase";
 
 type Entry = { id: string; text: string; corrected?: string; ts: number };
 const STORE_KEY = "ltai_journal";
@@ -39,7 +40,23 @@ export default function Journal() {
   const suggestions = useMemo(() => analyze(text), [text]);
 
   useEffect(() => {
-    try { const raw = localStorage.getItem(STORE_KEY); if (raw) setHistory(JSON.parse(raw)); } catch {}
+    const supabase = getSupabase();
+    if (!supabase) {
+      try { const raw = localStorage.getItem(STORE_KEY); if (raw) setHistory(JSON.parse(raw)); } catch {}
+      return;
+    }
+    (async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) return;
+      const { data, error } = await supabase
+        .from("journal_entries")
+        .select("id,text,ts")
+        .order("ts", { ascending: false })
+        .limit(50);
+      if (error) { toast.error("Failed to load journal"); return; }
+      const mapped = (data || []).map((d: any) => ({ id: String(d.id), text: d.text, ts: new Date(d.ts).getTime() })) as Entry[];
+      setHistory(mapped);
+    })();
   }, []);
 
   const save = (entry: Entry[]) => localStorage.setItem(STORE_KEY, JSON.stringify(entry));
@@ -50,7 +67,19 @@ export default function Journal() {
     toast.success("Applied corrections");
   };
 
-  const onSave = () => {
+  const onSave = async () => {
+    const supabase = getSupabase();
+    if (supabase) {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) { toast.error("Please sign in"); return; }
+      const { data, error } = await supabase.from("journal_entries").insert({ user_id: auth.user.id, text }).select("id,ts").single();
+      if (error) { toast.error("Save failed"); return; }
+      const e: Entry = { id: String(data.id), text, ts: new Date(data.ts).getTime() };
+      const next = [e, ...history].slice(0, 50);
+      setHistory(next);
+      toast.success("Saved entry");
+      return;
+    }
     const e: Entry = { id: String(Date.now()), text, ts: Date.now() };
     const next = [e, ...history].slice(0, 20);
     setHistory(next); save(next);
