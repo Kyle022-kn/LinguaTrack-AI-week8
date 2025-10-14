@@ -94,6 +94,7 @@ The app uses PostgreSQL with Drizzle ORM for user authentication and data persis
 - **Created user authentication system with database persistence**
 - **Set up database schema and storage layer**
 - **Connected frontend authentication to database API**
+- **Fixed critical security vulnerability: Server now enforces "learner" role for all new registrations (no client-controlled role assignment)**
 
 ## Configuration Notes
 - The Vite dev server is configured to work with Replit's proxy system
