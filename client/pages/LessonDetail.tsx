@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -7,10 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { LANGUAGES } from "@/data/languages";
+import { getSupabase } from "@/lib/supabase";
 import { ChallengeItem, ChallengeType, generateChallenges } from "@/data/challenges";
 import { toast } from "sonner";
 
-const TOPICS = [
+const DEFAULT_TOPICS = [
   { name: "Basics & Alphabet", goals: ["Learn common letters/sounds", "Essential words"], minutes: 10 },
   { name: "Greetings & Introductions", goals: ["Introduce yourself", "Polite phrases"], minutes: 12 },
   { name: "Numbers & Time", goals: ["1-100", "Ask the time"], minutes: 15 },
@@ -37,9 +38,47 @@ export default function LessonDetail() {
   const [selected, setSelected] = useState<string | null>(null);
   const [input, setInput] = useState("");
 
-  const questions = useMemo(() => generateChallenges(type, language?.key, 6), [type, language?.key]);
+  const [overrideQs, setOverrideQs] = useState<ChallengeItem[] | null>(null);
+  const questions = useMemo(() => {
+    if (overrideQs && overrideQs.length) {
+      const filtered = overrideQs.filter((q) => q.type === type);
+      return (filtered.length ? filtered : overrideQs).slice(0, 6);
+    }
+    return generateChallenges(type, language?.key, 6);
+  }, [type, language?.key, overrideQs]);
   const q = questions[index];
   const percent = Math.round(((index) / questions.length) * 100);
+
+  const [topics, setTopics] = useState(DEFAULT_TOPICS);
+
+  useEffect(() => {
+    const sb = getSupabase();
+    if (!sb || !language?.key) return;
+    (async () => {
+      const { data: lessons } = await sb.from('lessons').select('title,content,language').eq('language', language.key);
+      if (lessons && lessons.length) {
+        const mapped = lessons.map((l: any) => ({
+          name: l.title,
+          goals: Array.isArray(l.content?.goals) ? l.content.goals : [],
+          minutes: typeof l.content?.minutes === 'number' ? l.content.minutes : 10,
+        }));
+        setTopics(mapped);
+      }
+      const { data: quizRows } = await sb.from('quizzes').select('questions,language').eq('language', language.key).limit(1).single();
+      if (quizRows?.questions && Array.isArray(quizRows.questions)) {
+        const mapped: ChallengeItem[] = quizRows.questions.map((q: any, idx: number) => ({
+          id: `db_${idx}`,
+          lang: language.key as any,
+          type: (q.type as ChallengeType) || (q.options ? 'vocab' : 'translation'),
+          question: String(q.question || ''),
+          options: Array.isArray(q.options) ? q.options : undefined,
+          answer: q.answer ?? '',
+          explain: q.explain,
+        }));
+        setOverrideQs(mapped);
+      }
+    })();
+  }, [language?.key]);
 
   if (!language) return <div className="text-sm text-muted-foreground">Language not found.</div>;
 
@@ -65,15 +104,17 @@ export default function LessonDetail() {
       <Card className="rounded-2xl">
         <CardHeader className="pb-2"><CardTitle className="text-base">Topic Overview</CardTitle></CardHeader>
         <CardContent className="pt-0 space-y-3">
-          {TOPICS.map((t) => (
+          {topics.map((t) => (
             <div key={t.name} className="rounded-xl border p-3">
               <div className="flex items-center justify-between">
                 <div className="font-medium">{t.name}</div>
                 <div className="text-xs text-muted-foreground">~{t.minutes} min</div>
               </div>
-              <ul className="text-sm text-muted-foreground list-disc pl-5 mt-1">
-                {t.goals.map((g) => (<li key={g}>{g}</li>))}
-              </ul>
+              {t.goals?.length ? (
+                <ul className="text-sm text-muted-foreground list-disc pl-5 mt-1">
+                  {t.goals.map((g: string) => (<li key={g}>{g}</li>))}
+                </ul>
+              ) : null}
             </div>
           ))}
         </CardContent>
