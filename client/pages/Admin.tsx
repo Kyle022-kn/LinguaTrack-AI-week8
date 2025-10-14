@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LANGUAGES } from "@/data/languages";
 import { useAuth, User } from "@/hooks/useAuth";
+import { getSupabase } from "@/lib/supabase";
 
 const JOURNAL_KEY = "ltai_journal";
 
@@ -71,12 +72,23 @@ export default function Admin() {
         recent,
       });
 
-      const p: Record<string, string> = {};
-      for (const l of LANGUAGES) {
-        const key = `ltai_prompt_${l.key}`;
-        p[l.key] = localStorage.getItem(key) || "";
+      const supabase = getSupabase();
+      if (supabase && user?.role === 'admin') {
+        const { data } = await supabase.from('ai_prompts').select('language,prompt');
+        const p: Record<string, string> = {};
+        for (const l of LANGUAGES) {
+          const row = (data || []).find((r: any) => r.language === l.key);
+          p[l.key] = row?.prompt || '';
+        }
+        setPrompts(p);
+      } else {
+        const p: Record<string, string> = {};
+        for (const l of LANGUAGES) {
+          const key = `ltai_prompt_${l.key}`;
+          p[l.key] = localStorage.getItem(key) || "";
+        }
+        setPrompts(p);
       }
-      setPrompts(p);
     })();
   }, []);
 
@@ -116,7 +128,12 @@ export default function Admin() {
     setUsers((prev) => prev.filter((x: any) => x.email !== email));
   };
 
-  const savePrompt = (langKey: string) => {
+  const savePrompt = async (langKey: string) => {
+    const supabase = getSupabase();
+    if (supabase && user?.role === 'admin') {
+      await supabase.from('ai_prompts').upsert({ language: langKey, prompt: prompts[langKey] || '' });
+      return;
+    }
     const key = `ltai_prompt_${langKey}`;
     localStorage.setItem(key, prompts[langKey] || "");
   };
