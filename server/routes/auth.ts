@@ -45,9 +45,14 @@ export const handleLogin: RequestHandler = async (req, res) => {
       return res.status(400).json({ error: "Email and password are required" });
     }
 
+    const existingUser = await storage.getUserByEmail(email);
+    if (!existingUser) {
+      return res.status(401).json({ error: "No account found with this email address" });
+    }
+
     const user = await storage.verifyPassword(email, password);
     if (!user) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ error: "Incorrect password. Please try again" });
     }
 
     const sessionToken = createSession(user.id);

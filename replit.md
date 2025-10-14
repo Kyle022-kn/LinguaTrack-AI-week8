@@ -96,6 +96,13 @@ The app uses PostgreSQL with Drizzle ORM for user authentication and data persis
   - Adaptive difficulty: beginner, intermediate, advanced
   - Dynamic generation for all 5 languages
 
+**AI Lesson API (Protected):**
+- `POST /api/ai/lessons/generate` - Generate comprehensive AI-powered lessons (requires auth, 10 req/min limit)
+  - Dynamic lesson creation on any topic
+  - Includes vocabulary (8-12 words), grammar points (3-5), cultural notes (3-5)
+  - Adaptive difficulty: beginner, intermediate, advanced
+  - Works for all 5 languages
+
 **Progress & Gamification API (Protected):**
 - `GET /api/progress` - Get user XP, level, language progress, and achievements
 - `POST /api/progress/add-xp` - Add XP to user (auto-calculates level-ups)
@@ -104,20 +111,48 @@ The app uses PostgreSQL with Drizzle ORM for user authentication and data persis
 - `POST /api/progress/streak` - Update streak (maintains consistency across days)
 
 ## Recent Changes (October 14, 2025)
+- **🦊 NEW: Cute Fox Logo** - Added adorable fox logo symbolizing cleverness and quick learning
+- **🏠 NEW: Home Button** - Added prominent home button in header for easy navigation back to dashboard
+- **✨ IMPROVED: Auth Error Messages** - Enhanced login/signup with specific error messages:
+  - "No account found with this email address" when email doesn't exist
+  - "Incorrect password. Please try again" for wrong password
+  - Network error handling with user-friendly messages
+  - Loading states during authentication
+- **🎨 UI/UX Enhancements** - Better visual feedback with toast notifications for all auth operations
+- **🎮 GAME-LIKE PRACTICE EXPERIENCE** - Transformed AI Practice into a Duolingo-style game:
+  - ❤️ Hearts/Lives System - Start with 5 hearts, lose 1 per wrong answer, practice ends at 0 hearts
+  - 🎯 Visual Feedback - Correct answers bounce in green, wrong answers shake in red (custom animations)
+  - 🎉 Celebration Screen - Confetti burst (canvas-confetti) and stats when completing exercises successfully
+  - 🎨 Colorful UI - Game-like buttons with hover effects and smooth animations
+  - 💪 Progress Tracking - Visual progress bar through exercises
+  - ⚡ Immediate Feedback - Instant visual response to answers
+  - ✅ Success/Failure Flows - Streak updates only on successful completion, no rewards on heart depletion
+  - 🎊 Confetti Effect - Only triggers on successful completion (uses canvas-confetti library)
+
+## Recent Changes (October 14, 2025) - Previous
 - Configured for Replit environment
 - Updated Vite config to use port 5000 with proper HMR setup for Replit proxy
 - Installed all dependencies with pnpm
 - Set up Dev Server workflow
-- **Added PostgreSQL database with Drizzle ORM**
+- **✅ DATABASE FULLY OPERATIONAL: PostgreSQL database created and configured**
+  - All tables created successfully: users, user_progress, language_progress, streaks, achievements
+  - Database schema pushed with Drizzle ORM
+  - Connection verified and tested
 - **Created user authentication system with database persistence**
 - **Set up database schema and storage layer**
 - **Connected frontend authentication to database API**
 - **Fixed critical security vulnerability: Server now enforces "learner" role for all new registrations (no client-controlled role assignment)**
-- **Integrated OpenAI for AI-powered journaling with grammar correction and vocabulary feedback**
-- **Added rich topic content with detailed learning materials for all languages**
+- **✅ AI INTEGRATION FULLY WORKING: Configured Replit AI Integrations for OpenAI**
+  - Updated to use latest gpt-5-mini model (released August 7, 2025)
+  - Proper environment variable configuration (AI_INTEGRATIONS_OPENAI_BASE_URL, AI_INTEGRATIONS_OPENAI_API_KEY)
+  - No API key required - charges billed to Replit credits
+  - AI-powered journaling with grammar correction and vocabulary feedback
+  - AI exercise generation with JSON response format
+  - **Fixed localStorage key mismatch**: Updated AI Practice page to use correct session token key ("ltai_session")
+- **Added rich topic content with detailed learning materials for all 5 languages (Spanish, French, Japanese, Chinese, English)**
 - **Implemented PWA capabilities for mobile app experience (manifest, service worker, install prompt)**
-- **Added authentication and rate limiting to AI endpoints (10 requests/min for analysis, 5 requests/min for prompts)**
-- **🚀 NEW: Built comprehensive AI-Powered Practice system (Duolingo-like features)**
+- **Added authentication and rate limiting to AI endpoints (10 requests/min for analysis, 5 requests/min for prompts, 15 requests/min for exercises)**
+- **🚀 FULLY FUNCTIONAL: Built comprehensive AI-Powered Practice system (Duolingo-like features)**
   - AI exercise generation API with 5 exercise types (vocab, translation, fill-blank, sentence building, grammar/culture)
   - Adaptive difficulty levels (beginner, intermediate, advanced)
   - XP and leveling system with automatic level-up calculations
@@ -126,6 +161,12 @@ The app uses PostgreSQL with Drizzle ORM for user authentication and data persis
   - Achievement system framework
   - New `/ai-practice` route with full Duolingo-style learning experience
 - **Disabled PWA service worker in development** to prevent caching issues
+- **✨ NEW: AI-Powered Lesson Generation** (October 14, 2025)
+  - Users can now generate custom lessons on any topic using AI
+  - API endpoint: POST /api/ai/lessons/generate (10 req/min rate limit)
+  - Generates comprehensive lessons with vocabulary, grammar, and cultural notes
+  - Integrated into lesson detail pages for all 5 languages
+  - Note: AI-generated lessons are temporary (not persisted to database)
 
 ## Security & Authentication
 - **Session-based authentication**: Cryptographically secure session tokens (64-char hex)

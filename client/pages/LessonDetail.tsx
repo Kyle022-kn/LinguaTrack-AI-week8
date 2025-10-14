@@ -16,7 +16,7 @@ import {
   generateChallenges,
 } from "@/data/challenges";
 import { toast } from "sonner";
-import { BookOpen, Clock, Globe, Sparkles } from "lucide-react";
+import { BookOpen, Clock, Globe, Sparkles, Loader2 } from "lucide-react";
 
 function MCQ({
   q,
@@ -65,6 +65,9 @@ export default function LessonDetail() {
   const [topics, setTopics] = useState<TopicContent[]>(
     TOPIC_CONTENT[language?.key || ""] || []
   );
+  const [aiTopic, setAiTopic] = useState("");
+  const [aiLevel, setAiLevel] = useState<string>("beginner");
+  const [generatingLesson, setGeneratingLesson] = useState(false);
 
   useEffect(() => {
     const sb = getSupabase();
@@ -119,6 +122,58 @@ export default function LessonDetail() {
       <div className="text-sm text-muted-foreground">Language not found.</div>
     );
 
+  const generateAILesson = async () => {
+    if (!aiTopic.trim()) {
+      toast.error("Please enter a topic");
+      return;
+    }
+    
+    if (!language?.name) {
+      toast.error("Language not selected");
+      return;
+    }
+    
+    const sessionToken = localStorage.getItem("ltai_session");
+    if (!sessionToken) {
+      toast.error("Please log in to generate lessons");
+      return;
+    }
+    
+    setGeneratingLesson(true);
+    try {
+      const response = await fetch("/api/ai/lessons/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionToken}`,
+        },
+        body: JSON.stringify({
+          language: language.name,
+          topic: aiTopic,
+          level: aiLevel,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: "Failed to generate lesson" }));
+        throw new Error(errorData.error || "Failed to generate lesson");
+      }
+
+      const data = await response.json();
+      setTopics([data.lesson, ...topics]);
+      setAiTopic("");
+      toast.success("AI Lesson Generated!", { 
+        description: `New lesson on "${data.lesson.name}" has been added` 
+      });
+    } catch (error: any) {
+      toast.error("Failed to generate lesson", { 
+        description: error.message || "Please try again" 
+      });
+    } finally {
+      setGeneratingLesson(false);
+    }
+  };
+
   const submit = () => {
     if (!q) return;
     const correctAns = Array.isArray(q.answer)
@@ -161,6 +216,63 @@ export default function LessonDetail() {
           </p>
         </div>
       </div>
+
+      <Card className="rounded-2xl overflow-hidden bg-gradient-to-br from-primary/10 to-transparent">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+            <Sparkles className="size-5 text-primary" />
+            Generate AI-Powered Lesson
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm text-muted-foreground">
+            Create a custom lesson on any topic using AI. Perfect for exploring specific areas of interest! Note: AI-generated lessons are temporary and will reset on page reload.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="ai-topic">Topic</Label>
+              <Input
+                id="ai-topic"
+                value={aiTopic}
+                onChange={(e) => setAiTopic(e.target.value)}
+                placeholder="e.g., Food ordering, Weather, Business"
+                disabled={generatingLesson}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="ai-level">Level</Label>
+              <select
+                id="ai-level"
+                value={aiLevel}
+                onChange={(e) => setAiLevel(e.target.value)}
+                className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
+                disabled={generatingLesson}
+              >
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+            </div>
+          </div>
+          <Button 
+            onClick={generateAILesson} 
+            disabled={generatingLesson || !aiTopic.trim()}
+            className="w-full sm:w-auto"
+          >
+            {generatingLesson ? (
+              <>
+                <Loader2 className="size-4 mr-2 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Sparkles className="size-4 mr-2" />
+                Generate Lesson
+              </>
+            )}
+          </Button>
+        </CardContent>
+      </Card>
 
       <div className="space-y-3">
         {topics.map((topic, idx) => (

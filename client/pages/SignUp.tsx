@@ -26,6 +26,7 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [agree, setAgree] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,16 +44,21 @@ export default function SignUp() {
       });
       return;
     }
-    const ok = await register({
+    
+    setLoading(true);
+    const result = await register({
       email,
       password,
       role: "learner",
       name: name || email.split("@")[0],
     });
-    if (!ok) {
-      toast.error("Account already exists");
+    setLoading(false);
+    
+    if (result.success === false) {
+      toast.error(result.error);
       return;
     }
+    
     toast.success("Account created", {
       description: "Welcome to LinguaTrack AI",
     });
@@ -143,8 +149,9 @@ export default function SignUp() {
             <Button
               type="submit"
               className="w-full h-12 text-base font-semibold"
+              disabled={loading}
             >
-              <UserPlus className="mr-2 size-5" /> Sign up
+              <UserPlus className="mr-2 size-5" /> {loading ? "Creating account..." : "Sign up"}
             </Button>
             <div className="text-center text-sm">
               Already have an account?{" "}
