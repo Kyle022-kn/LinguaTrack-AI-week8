@@ -90,6 +90,19 @@ The app uses PostgreSQL with Drizzle ORM for user authentication and data persis
 - `POST /api/ai/analyze-journal` - AI grammar/vocabulary analysis (requires auth, 10 req/min limit)
 - `POST /api/ai/generate-prompts` - Generate writing prompts (requires auth, 5 req/min limit)
 
+**AI Exercise API (Protected):**
+- `POST /api/ai/exercises/generate` - Generate AI-powered exercises (requires auth, 15 req/min limit)
+  - Supports 5 exercise types: vocab, translation, fillblank, sentencebuilding, multiplechoice
+  - Adaptive difficulty: beginner, intermediate, advanced
+  - Dynamic generation for all 5 languages
+
+**Progress & Gamification API (Protected):**
+- `GET /api/progress` - Get user XP, level, language progress, and achievements
+- `POST /api/progress/add-xp` - Add XP to user (auto-calculates level-ups)
+- `POST /api/progress/update-language` - Update language-specific progress
+- `GET /api/progress/streak` - Get user's current streak
+- `POST /api/progress/streak` - Update streak (maintains consistency across days)
+
 ## Recent Changes (October 14, 2025)
 - Configured for Replit environment
 - Updated Vite config to use port 5000 with proper HMR setup for Replit proxy
@@ -104,6 +117,15 @@ The app uses PostgreSQL with Drizzle ORM for user authentication and data persis
 - **Added rich topic content with detailed learning materials for all languages**
 - **Implemented PWA capabilities for mobile app experience (manifest, service worker, install prompt)**
 - **Added authentication and rate limiting to AI endpoints (10 requests/min for analysis, 5 requests/min for prompts)**
+- **🚀 NEW: Built comprehensive AI-Powered Practice system (Duolingo-like features)**
+  - AI exercise generation API with 5 exercise types (vocab, translation, fill-blank, sentence building, grammar/culture)
+  - Adaptive difficulty levels (beginner, intermediate, advanced)
+  - XP and leveling system with automatic level-up calculations
+  - Database-backed streak tracking with daily consistency
+  - Real-time progress tracking per language
+  - Achievement system framework
+  - New `/ai-practice` route with full Duolingo-style learning experience
+- **Disabled PWA service worker in development** to prevent caching issues
 
 ## Security & Authentication
 - **Session-based authentication**: Cryptographically secure session tokens (64-char hex)
