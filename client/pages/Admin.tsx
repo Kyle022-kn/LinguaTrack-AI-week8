@@ -41,10 +41,24 @@ export default function Admin() {
       const weekNew = us.filter((u) => u.createdAt >= weekAgo).length;
 
       let journal: JournalEntry[] = [];
-      try {
-        const raw = localStorage.getItem(JOURNAL_KEY);
-        if (raw) journal = JSON.parse(raw);
-      } catch {}
+      let journalCount = 0;
+      const sb = getSupabase();
+      if (sb) {
+        const { data: recentRows } = await sb
+          .from('journal_entries')
+          .select('id,ts')
+          .order('ts', { ascending: false })
+          .limit(5);
+        journal = (recentRows || []).map((r: any) => ({ id: String(r.id), text: '', ts: new Date(r.ts).getTime() }));
+        const { count } = await sb.from('journal_entries').select('*', { count: 'exact', head: true });
+        journalCount = count || journal.length;
+      } else {
+        try {
+          const raw = localStorage.getItem(JOURNAL_KEY);
+          if (raw) journal = JSON.parse(raw);
+        } catch {}
+        journalCount = journal.length;
+      }
 
       const recent = [
         ...us
@@ -68,7 +82,7 @@ export default function Admin() {
       setStats({
         totalUsers: us.length,
         weekNewUsers: weekNew,
-        journalCount: journal.length,
+        journalCount,
         recent,
       });
 
