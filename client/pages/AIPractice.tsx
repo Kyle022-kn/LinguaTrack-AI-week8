@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { LANGUAGES } from "@/data/languages";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import confetti from "canvas-confetti";
 import {
   Sparkles,
   Trophy,
@@ -62,6 +63,37 @@ export default function AIPractice() {
     fetchProgress();
     fetchStreak();
   }, []);
+
+  useEffect(() => {
+    if (showCelebration) {
+      const duration = 3000;
+      const end = Date.now() + duration;
+
+      const interval = setInterval(() => {
+        if (Date.now() > end) {
+          clearInterval(interval);
+          return;
+        }
+
+        confetti({
+          particleCount: 3,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: ['#FFD700', '#FFA500', '#FF6347', '#87CEEB', '#98FB98'],
+        });
+        confetti({
+          particleCount: 3,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: ['#FFD700', '#FFA500', '#FF6347', '#87CEEB', '#98FB98'],
+        });
+      }, 50);
+
+      return () => clearInterval(interval);
+    }
+  }, [showCelebration]);
 
   const fetchProgress = async () => {
     try {
@@ -146,14 +178,15 @@ export default function AIPractice() {
       setAnswerAnimation("correct");
       setTimeout(() => setAnswerAnimation(null), 600);
     } else {
-      setHearts((h) => Math.max(0, h - 1));
+      const newHearts = Math.max(0, hearts - 1);
+      setHearts(newHearts);
       setAnswerAnimation("incorrect");
       setTimeout(() => setAnswerAnimation(null), 600);
       
-      if (hearts <= 1) {
+      if (newHearts === 0) {
         setTimeout(() => {
           toast.error("Out of hearts!", { description: "Practice session ended" });
-          finishPractice();
+          finishPractice(false);
         }, 1500);
       }
     }
@@ -194,16 +227,15 @@ export default function AIPractice() {
     }
   };
 
-  const finishPractice = async () => {
+  const finishPractice = async (success: boolean = true) => {
     try {
-      const sessionToken = localStorage.getItem("ltai_session");
-      await fetch("/api/progress/streak", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${sessionToken}` },
-      });
-      fetchStreak();
-      
-      if (hearts > 0) {
+      if (success) {
+        const sessionToken = localStorage.getItem("ltai_session");
+        await fetch("/api/progress/streak", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${sessionToken}` },
+        });
+        fetchStreak();
         setShowCelebration(true);
       } else {
         toast.error("Practice ended", {
