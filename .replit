@@ -46,10 +46,6 @@ externalPort = 3003
 localPort = 38353
 externalPort = 3000
 
-[[ports]]
-localPort = 44003
-externalPort = 3002
-
 [deployment]
 deploymentTarget = "vm"
 run = ["pnpm", "start"]
