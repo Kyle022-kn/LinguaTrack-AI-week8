@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth, UserRole } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { CheckCircle2, UserPlus } from "lucide-react";
 import BackButton from "@/components/BackButton";
 import { toast } from "sonner";
@@ -22,7 +21,6 @@ function scorePassword(pw: string) {
 export default function SignUp() {
   const { register } = useAuth();
   const navigate = useNavigate();
-  const [role, setRole] = useState<UserRole>("learner");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -48,7 +46,7 @@ export default function SignUp() {
     const ok = await register({
       email,
       password,
-      role,
+      role: "learner",
       name: name || email.split("@")[0],
     });
     if (!ok) {
@@ -126,22 +124,6 @@ export default function SignUp() {
                 onChange={(e) => setConfirm(e.target.value)}
                 required
               />
-            </div>
-            <div className="grid gap-2">
-              <Label>Select role</Label>
-              <ToggleGroup
-                type="single"
-                value={role}
-                onValueChange={(v) => v && setRole(v as UserRole)}
-                className="w-full"
-              >
-                <ToggleGroupItem value="learner" className="flex-1">
-                  Learner
-                </ToggleGroupItem>
-                <ToggleGroupItem value="admin" className="flex-1">
-                  Admin
-                </ToggleGroupItem>
-              </ToggleGroup>
             </div>
             <label className="flex items-center gap-2 text-sm">
               <input

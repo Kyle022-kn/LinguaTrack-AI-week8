@@ -1,5 +1,5 @@
-import { users, type User, type InsertUser } from "@shared/schema";
-import { db } from "./db";
+import { users, type User, type InsertUser } from "../shared/schema.js";
+import { db } from "./db.js";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcrypt";
 

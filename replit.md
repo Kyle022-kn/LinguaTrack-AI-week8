@@ -61,13 +61,43 @@ And more...
 - `GET /api/ping` - Simple ping endpoint
 - `GET /api/demo` - Demo endpoint
 
+## Database
+
+### PostgreSQL + Drizzle ORM
+The app uses PostgreSQL with Drizzle ORM for user authentication and data persistence.
+
+**Database Schema:**
+- `users` table: stores user credentials and profile information
+  - id (serial primary key)
+  - email (unique)
+  - password_hash (bcrypt hashed)
+  - name
+  - role (learner/admin)
+  - created_at, updated_at
+
+**Database Commands:**
+- `pnpm db:push` - Push schema changes to database
+- Schema defined in `shared/schema.ts`
+- Database config in `drizzle.config.ts`
+
+**API Endpoints:**
+- `POST /api/auth/register` - Create new user account
+- `POST /api/auth/login` - Authenticate user
+- `GET /api/auth/user/:id` - Get user by ID
+
 ## Recent Changes (October 14, 2025)
 - Configured for Replit environment
 - Updated Vite config to use port 5000 with proper HMR setup for Replit proxy
 - Installed all dependencies with pnpm
 - Set up Dev Server workflow
+- **Added PostgreSQL database with Drizzle ORM**
+- **Created user authentication system with database persistence**
+- **Set up database schema and storage layer**
+- **Connected frontend authentication to database API**
 
 ## Configuration Notes
 - The Vite dev server is configured to work with Replit's proxy system
 - HMR (Hot Module Reload) is properly configured for WebSocket connections through Replit's domain
 - Frontend serves on 0.0.0.0:5000 to allow proxy access
+- Server files use relative imports (not path aliases) to avoid Vite config loading issues
+- Database uses standard PostgreSQL driver (pg) for compatibility with Replit

@@ -65,13 +65,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
       return true;
     }
-    const { verify } = await import("@/lib/authStore");
-    const found = await verify(args.email, args.password);
-    if (!found) return false;
-    const u: User = { email: found.email, role: found.role, name: found.name };
-    setUser(u);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
-    return true;
+    
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: args.email, password: args.password }),
+      });
+      
+      if (!response.ok) return false;
+      
+      const data = await response.json();
+      const u: User = { 
+        email: data.user.email, 
+        role: data.user.role as UserRole, 
+        name: data.user.name 
+      };
+      setUser(u);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
+      return true;
+    } catch {
+      return false;
+    }
   }, []);
 
   const register = useCallback(async (args: { email: string; password: string; role: UserRole; name: string }) => {
@@ -85,10 +100,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
       return true;
     }
-    const { addUser } = await import("@/lib/authStore");
+    
     try {
-      await addUser(args);
-      const u: User = { email: args.email, role: args.role, name: args.name };
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          email: args.email, 
+          password: args.password,
+          name: args.name,
+          role: args.role 
+        }),
+      });
+      
+      if (!response.ok) return false;
+      
+      const data = await response.json();
+      const u: User = { 
+        email: data.user.email, 
+        role: data.user.role as UserRole, 
+        name: data.user.name 
+      };
       setUser(u);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
       return true;

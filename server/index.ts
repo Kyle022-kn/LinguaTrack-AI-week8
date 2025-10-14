@@ -1,8 +1,6 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import { handleDemo } from "./routes/demo";
-import { handleRegister, handleLogin, handleGetUser } from "./routes/auth";
 
 export function createServer() {
   const app = express();
@@ -18,12 +16,26 @@ export function createServer() {
     res.json({ message: ping });
   });
 
-  app.get("/api/demo", handleDemo);
+  app.get("/api/demo", async (req, res, next) => {
+    const { handleDemo } = await import("./routes/demo");
+    return handleDemo(req, res, next);
+  });
 
   // Authentication routes
-  app.post("/api/auth/register", handleRegister);
-  app.post("/api/auth/login", handleLogin);
-  app.get("/api/auth/user/:id", handleGetUser);
+  app.post("/api/auth/register", async (req, res, next) => {
+    const { handleRegister } = await import("./routes/auth");
+    return handleRegister(req, res, next);
+  });
+  
+  app.post("/api/auth/login", async (req, res, next) => {
+    const { handleLogin } = await import("./routes/auth");
+    return handleLogin(req, res, next);
+  });
+  
+  app.get("/api/auth/user/:id", async (req, res, next) => {
+    const { handleGetUser } = await import("./routes/auth");
+    return handleGetUser(req, res, next);
+  });
 
   return app;
 }
