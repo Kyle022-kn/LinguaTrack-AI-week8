@@ -17,7 +17,7 @@ export const handleAnalyzeJournal: RequestHandler = async (req, res) => {
     const language = targetLanguage || "English";
     
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-5-mini", // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
       messages: [
         {
           role: "system",
@@ -41,7 +41,7 @@ Format your response as JSON with this structure:
         }
       ],
       response_format: { type: "json_object" },
-      temperature: 0.3,
+      max_completion_tokens: 8192,
     });
 
     const result = JSON.parse(completion.choices[0].message.content || "{}");
@@ -57,7 +57,7 @@ export const handleGeneratePrompts: RequestHandler = async (req, res) => {
     const { language, level } = req.body;
     
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-5-mini", // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
       messages: [
         {
           role: "system",
@@ -68,7 +68,7 @@ export const handleGeneratePrompts: RequestHandler = async (req, res) => {
           content: "Generate journaling prompts"
         }
       ],
-      temperature: 0.8,
+      max_completion_tokens: 8192,
     });
 
     const prompts = completion.choices[0].message.content?.split('\n').filter(p => p.trim().length > 0) || [];
