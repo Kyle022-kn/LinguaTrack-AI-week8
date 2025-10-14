@@ -1,9 +1,9 @@
 import { RequestHandler } from "express";
-import { storage } from "../storage";
 
 export const handleRegister: RequestHandler = async (req, res) => {
   try {
-    const { email, password, name, role } = req.body;
+    const { storage } = await import("../storage");
+    const { email, password, name } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ error: "Email and password are required" });
@@ -18,7 +18,7 @@ export const handleRegister: RequestHandler = async (req, res) => {
       email,
       password,
       name,
-      role: role || "learner",
+      role: "learner",
     });
 
     const { passwordHash, ...userWithoutPassword } = user;
@@ -31,6 +31,7 @@ export const handleRegister: RequestHandler = async (req, res) => {
 
 export const handleLogin: RequestHandler = async (req, res) => {
   try {
+    const { storage } = await import("../storage");
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -52,6 +53,7 @@ export const handleLogin: RequestHandler = async (req, res) => {
 
 export const handleGetUser: RequestHandler = async (req, res) => {
   try {
+    const { storage } = await import("../storage");
     const userId = parseInt(req.params.id);
     if (isNaN(userId)) {
       return res.status(400).json({ error: "Invalid user ID" });
