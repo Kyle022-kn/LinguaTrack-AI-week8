@@ -39,6 +39,7 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
+      {/* AI Journal Feature Added */}
       <section className="rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 p-5">
         <div className="flex items-center justify-between">
           <div>
