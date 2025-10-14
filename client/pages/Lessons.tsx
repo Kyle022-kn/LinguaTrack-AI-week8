@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LANGUAGES, Language } from "@/data/languages";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getSupabase } from "@/lib/supabase";
 
 const BASE_TOPICS = [
   "Basics & Alphabet",
@@ -11,7 +13,7 @@ const BASE_TOPICS = [
   "Grammar A1",
 ];
 
-function LanguageBlock({ lang }: { lang: Language }) {
+function LanguageBlock({ lang, topics }: { lang: Language; topics: string[] }) {
   return (
     <Card className="rounded-2xl overflow-hidden">
       <CardHeader className="pb-2">
@@ -19,7 +21,7 @@ function LanguageBlock({ lang }: { lang: Language }) {
       </CardHeader>
       <CardContent className="pt-0 space-y-2">
         <ul className="text-sm text-muted-foreground list-disc pl-5">
-          {BASE_TOPICS.map((t) => (
+          {(topics.length ? topics : BASE_TOPICS).slice(0,5).map((t) => (
             <li key={t}>{t}</li>
           ))}
         </ul>
@@ -37,6 +39,22 @@ function LanguageBlock({ lang }: { lang: Language }) {
 }
 
 export default function Lessons() {
+  const [topicsMap, setTopicsMap] = useState<Record<string, string[]>>({});
+  useEffect(() => {
+    const sb = getSupabase();
+    if (!sb) return;
+    (async () => {
+      const { data, error } = await sb.from('lessons').select('language,title');
+      if (error) return;
+      const map: Record<string, string[]> = {};
+      for (const row of data || []) {
+        map[row.language] = map[row.language] || [];
+        if (!map[row.language].includes(row.title)) map[row.language].push(row.title);
+      }
+      setTopicsMap(map);
+    })();
+  }, []);
+
   return (
     <div className="space-y-4">
       <div>
@@ -45,7 +63,7 @@ export default function Lessons() {
       </div>
       <div className="grid grid-cols-1 gap-3">
         {LANGUAGES.map((l) => (
-          <LanguageBlock key={l.key} lang={l} />
+          <LanguageBlock key={l.key} lang={l} topics={topicsMap[l.key] || []} />
         ))}
       </div>
     </div>
