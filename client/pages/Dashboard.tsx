@@ -3,12 +3,28 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { LANGUAGES } from "@/data/languages";
 import { useAuth } from "@/hooks/useAuth";
+import { useEffect, useState } from "react";
+import { getSupabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { Award, BarChart3, BookOpenCheck, Flame, LayoutGrid, ShieldCheck, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const [prog, setProg] = useState<Record<string, number>>({});
+  useEffect(() => {
+    const supabase = getSupabase();
+    if (!supabase) return;
+    (async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) return;
+      const { data, error } = await supabase.from('progress').select('lang,value');
+      if (error) return;
+      const map: Record<string, number> = {};
+      for (const r of data || []) map[r.lang] = r.value;
+      setProg(map);
+    })();
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -56,7 +72,7 @@ export default function Dashboard() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="font-medium truncate">{l.name}</div>
-                      <Progress value={l.progress} className="h-2 mt-2" style={{ ["--progress-color"]: `hsl(var(${l.colorVar}))` } as React.CSSProperties} />
+                      <Progress value={prog[l.key] ?? l.progress} className="h-2 mt-2" style={{ ["--progress-color"]: `hsl(var(${l.colorVar}))` } as React.CSSProperties} />
                     </div>
                   </div>
                 </CardContent>
