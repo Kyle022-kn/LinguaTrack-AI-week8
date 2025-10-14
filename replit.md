@@ -111,6 +111,16 @@ The app uses PostgreSQL with Drizzle ORM for user authentication and data persis
 - `POST /api/progress/streak` - Update streak (maintains consistency across days)
 
 ## Recent Changes (October 14, 2025)
+- **🦊 NEW: Cute Fox Logo** - Added adorable fox logo symbolizing cleverness and quick learning
+- **🏠 NEW: Home Button** - Added prominent home button in header for easy navigation back to dashboard
+- **✨ IMPROVED: Auth Error Messages** - Enhanced login/signup with specific error messages:
+  - "No account found with this email address" when email doesn't exist
+  - "Incorrect password. Please try again" for wrong password
+  - Network error handling with user-friendly messages
+  - Loading states during authentication
+- **🎨 UI/UX Enhancements** - Better visual feedback with toast notifications for all auth operations
+
+## Recent Changes (October 14, 2025) - Previous
 - Configured for Replit environment
 - Updated Vite config to use port 5000 with proper HMR setup for Replit proxy
 - Installed all dependencies with pnpm
