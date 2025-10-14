@@ -60,7 +60,7 @@ export default function AIPractice() {
 
   const fetchProgress = async () => {
     try {
-      const sessionToken = localStorage.getItem("sessionToken");
+      const sessionToken = localStorage.getItem("ltai_session");
       const response = await fetch("/api/progress", {
         headers: { Authorization: `Bearer ${sessionToken}` },
       });
@@ -76,7 +76,7 @@ export default function AIPractice() {
 
   const fetchStreak = async () => {
     try {
-      const sessionToken = localStorage.getItem("sessionToken");
+      const sessionToken = localStorage.getItem("ltai_session");
       const response = await fetch("/api/progress/streak", {
         headers: { Authorization: `Bearer ${sessionToken}` },
       });
@@ -92,7 +92,7 @@ export default function AIPractice() {
   const generateExercises = async () => {
     setLoading(true);
     try {
-      const sessionToken = localStorage.getItem("sessionToken");
+      const sessionToken = localStorage.getItem("ltai_session");
       const response = await fetch("/api/ai/exercises/generate", {
         method: "POST",
         headers: {
@@ -141,7 +141,7 @@ export default function AIPractice() {
 
   const addXP = async (amount: number) => {
     try {
-      const sessionToken = localStorage.getItem("sessionToken");
+      const sessionToken = localStorage.getItem("ltai_session");
       const response = await fetch("/api/progress/add-xp", {
         method: "POST",
         headers: {
@@ -176,7 +176,7 @@ export default function AIPractice() {
 
   const finishPractice = async () => {
     try {
-      const sessionToken = localStorage.getItem("sessionToken");
+      const sessionToken = localStorage.getItem("ltai_session");
       await fetch("/api/progress/streak", {
         method: "POST",
         headers: { Authorization: `Bearer ${sessionToken}` },
