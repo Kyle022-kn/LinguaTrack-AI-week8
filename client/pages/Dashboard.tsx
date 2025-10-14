@@ -12,6 +12,7 @@ import {
   BookOpenCheck,
   Flame,
   LayoutGrid,
+  NotebookPen,
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
@@ -53,10 +54,18 @@ export default function Dashboard() {
             <span className="text-sm font-semibold">7 day streak</span>
           </div>
         </div>
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
           <Link to="/challenge" className="block">
             <Button className="w-full h-12 text-base font-semibold">
               <Sparkles className="mr-2 size-5" /> Daily Challenge
+            </Button>
+          </Link>
+          <Link to="/journal" className="block">
+            <Button
+              variant="default"
+              className="w-full h-12 text-base font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+            >
+              <NotebookPen className="mr-2 size-5" /> AI Journal
             </Button>
           </Link>
           <Link to="/progress" className="block">
@@ -112,6 +121,18 @@ export default function Dashboard() {
       </section>
 
       <section className="grid grid-cols-2 gap-3">
+        <Link to="/journal" className="block col-span-2">
+          <Card className="rounded-2xl border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <NotebookPen className="size-5 text-purple-600" /> AI-Powered Journal
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0 text-sm text-muted-foreground">
+              Write & get AI grammar corrections, vocabulary insights, and personalized feedback
+            </CardContent>
+          </Card>
+        </Link>
         <Link to="/lessons" className="block">
           <Card className="rounded-2xl">
             <CardHeader className="pb-2">
