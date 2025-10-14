@@ -6,7 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import { LANGUAGES } from "@/data/languages";
+import { TOPIC_CONTENT, TopicContent } from "@shared/topic-content";
 import { getSupabase } from "@/lib/supabase";
 import {
   ChallengeItem,
@@ -14,30 +16,7 @@ import {
   generateChallenges,
 } from "@/data/challenges";
 import { toast } from "sonner";
-
-const DEFAULT_TOPICS = [
-  {
-    name: "Basics & Alphabet",
-    goals: ["Learn common letters/sounds", "Essential words"],
-    minutes: 10,
-  },
-  {
-    name: "Greetings & Introductions",
-    goals: ["Introduce yourself", "Polite phrases"],
-    minutes: 12,
-  },
-  { name: "Numbers & Time", goals: ["1-100", "Ask the time"], minutes: 15 },
-  {
-    name: "Food & Travel",
-    goals: ["Order at a cafe", "Ask directions"],
-    minutes: 15,
-  },
-  {
-    name: "Grammar A1",
-    goals: ["Basic tenses", "Articles & plurals"],
-    minutes: 18,
-  },
-];
+import { BookOpen, Clock, Globe, Sparkles } from "lucide-react";
 
 function MCQ({
   q,
@@ -49,12 +28,12 @@ function MCQ({
   selected: string | null;
 }) {
   return (
-    <div className="grid grid-cols-2 gap-2">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
       {q.options!.map((opt) => (
         <button
           key={opt}
           onClick={() => onSelect(opt)}
-          className={`rounded-xl border px-3 py-2 text-left ${selected === opt ? "border-primary bg-primary/10" : "hover:bg-accent"}`}
+          className={`rounded-xl border px-3 py-2 text-left transition-colors ${selected === opt ? "border-primary bg-primary/10" : "hover:bg-accent"}`}
         >
           {opt}
         </button>
@@ -83,7 +62,9 @@ export default function LessonDetail() {
   const q = questions[index];
   const percent = Math.round((index / questions.length) * 100);
 
-  const [topics, setTopics] = useState(DEFAULT_TOPICS);
+  const [topics, setTopics] = useState<TopicContent[]>(
+    TOPIC_CONTENT[language?.key || ""] || []
+  );
 
   useEffect(() => {
     const sb = getSupabase();
@@ -99,8 +80,14 @@ export default function LessonDetail() {
           goals: Array.isArray(l.content?.goals) ? l.content.goals : [],
           minutes:
             typeof l.content?.minutes === "number" ? l.content.minutes : 10,
+          description: l.content?.description || "",
+          vocabulary: l.content?.vocabulary || [],
+          grammar: l.content?.grammar || [],
+          culturalNotes: l.content?.culturalNotes || [],
         }));
         setTopics(mapped);
+      } else {
+        setTopics(TOPIC_CONTENT[language.key] || []);
       }
       const { data: quizRows } = await sb
         .from("quizzes")
@@ -157,48 +144,125 @@ export default function LessonDetail() {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 pb-20 md:pb-5">
       <div className="flex items-center gap-3">
         <div
-          className="size-10 rounded-xl grid place-items-center text-white"
+          className="size-10 sm:size-12 rounded-xl grid place-items-center text-white text-xl sm:text-2xl"
           style={{ backgroundColor: `hsl(var(${language.colorVar}))` }}
         >
           {language.emoji}
         </div>
         <div>
-          <h1 className="text-xl font-bold tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
             {language.name} Lessons
           </h1>
           <p className="text-sm text-muted-foreground">
-            Topic overview, practice and quizzes.
+            Comprehensive learning materials
           </p>
         </div>
       </div>
 
-      <Card className="rounded-2xl">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base">Topic Overview</CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0 space-y-3">
-          {topics.map((t) => (
-            <div key={t.name} className="rounded-xl border p-3">
-              <div className="flex items-center justify-between">
-                <div className="font-medium">{t.name}</div>
-                <div className="text-xs text-muted-foreground">
-                  ~{t.minutes} min
+      <div className="space-y-3">
+        {topics.map((topic, idx) => (
+          <Card key={idx} className="rounded-2xl overflow-hidden">
+            <CardHeader className="pb-3 bg-gradient-to-br from-primary/5 to-transparent">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1">
+                  <CardTitle className="text-base sm:text-lg mb-2">
+                    {topic.name}
+                  </CardTitle>
+                  <div className="flex gap-2 flex-wrap mb-3">
+                    <Badge variant="outline" className="text-xs">
+                      <Clock className="size-3 mr-1" />
+                      {topic.minutes} min
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      <BookOpen className="size-3 mr-1" />
+                      {topic.goals.length} goals
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {topic.description}
+                  </p>
                 </div>
               </div>
-              {t.goals?.length ? (
-                <ul className="text-sm text-muted-foreground list-disc pl-5 mt-1">
-                  {t.goals.map((g: string) => (
-                    <li key={g}>{g}</li>
-                  ))}
-                </ul>
-              ) : null}
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+            </CardHeader>
+            <CardContent className="pt-3 space-y-4">
+              {topic.goals.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-semibold mb-2 flex items-center gap-2">
+                    <Sparkles className="size-4 text-primary" />
+                    Learning Goals
+                  </h4>
+                  <ul className="text-sm text-muted-foreground list-disc pl-5 space-y-1">
+                    {topic.goals.map((g: string, i: number) => (
+                      <li key={i}>{g}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {topic.vocabulary && topic.vocabulary.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-semibold mb-2">Key Vocabulary</h4>
+                  <div className="grid gap-2">
+                    {topic.vocabulary.slice(0, 4).map((v, i) => (
+                      <div key={i} className="p-2 rounded-lg bg-muted/50 text-sm">
+                        <div className="flex justify-between items-start gap-2 mb-1">
+                          <span className="font-medium">{v.word}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {v.translation}
+                          </span>
+                        </div>
+                        <div className="text-xs text-muted-foreground italic">
+                          "{v.example}"
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {topic.grammar && topic.grammar.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-semibold mb-2">Grammar Points</h4>
+                  <div className="space-y-2">
+                    {topic.grammar.map((g, i) => (
+                      <div key={i} className="p-3 rounded-lg border text-sm">
+                        <div className="font-medium mb-1">{g.point}</div>
+                        <div className="text-xs text-muted-foreground mb-2">
+                          {g.explanation}
+                        </div>
+                        <div className="flex gap-2 flex-wrap">
+                          {g.examples.map((ex, j) => (
+                            <Badge key={j} variant="secondary" className="text-xs">
+                              {ex}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {topic.culturalNotes && topic.culturalNotes.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-semibold mb-2 flex items-center gap-2">
+                    <Globe className="size-4 text-primary" />
+                    Cultural Notes
+                  </h4>
+                  <ul className="text-sm text-muted-foreground list-disc pl-5 space-y-1">
+                    {topic.culturalNotes.map((note, i) => (
+                      <li key={i}>{note}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
       <Tabs value={type} onValueChange={(v) => setType(v as ChallengeType)}>
         <TabsList className="w-full grid grid-cols-3">
