@@ -79,6 +79,10 @@ export async function createServer() {
   const { default: exerciseRouter } = await import("./routes/ai-exercises");
   app.use("/api/ai/exercises", exerciseRouter);
 
+  // AI Lesson routes (protected with auth and rate limiting - 10 requests/minute)
+  const { default: lessonRouter } = await import("./routes/ai-lessons");
+  app.use("/api/ai/lessons", lessonRouter);
+
   // Progress and XP routes (protected with auth)
   const { default: progressRouter } = await import("./routes/progress");
   app.use("/api/progress", progressRouter);

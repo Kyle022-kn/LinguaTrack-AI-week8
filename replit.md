@@ -96,6 +96,13 @@ The app uses PostgreSQL with Drizzle ORM for user authentication and data persis
   - Adaptive difficulty: beginner, intermediate, advanced
   - Dynamic generation for all 5 languages
 
+**AI Lesson API (Protected):**
+- `POST /api/ai/lessons/generate` - Generate comprehensive AI-powered lessons (requires auth, 10 req/min limit)
+  - Dynamic lesson creation on any topic
+  - Includes vocabulary (8-12 words), grammar points (3-5), cultural notes (3-5)
+  - Adaptive difficulty: beginner, intermediate, advanced
+  - Works for all 5 languages
+
 **Progress & Gamification API (Protected):**
 - `GET /api/progress` - Get user XP, level, language progress, and achievements
 - `POST /api/progress/add-xp` - Add XP to user (auto-calculates level-ups)
@@ -135,6 +142,12 @@ The app uses PostgreSQL with Drizzle ORM for user authentication and data persis
   - Achievement system framework
   - New `/ai-practice` route with full Duolingo-style learning experience
 - **Disabled PWA service worker in development** to prevent caching issues
+- **✨ NEW: AI-Powered Lesson Generation** (October 14, 2025)
+  - Users can now generate custom lessons on any topic using AI
+  - API endpoint: POST /api/ai/lessons/generate (10 req/min rate limit)
+  - Generates comprehensive lessons with vocabulary, grammar, and cultural notes
+  - Integrated into lesson detail pages for all 5 languages
+  - Note: AI-generated lessons are temporary (not persisted to database)
 
 ## Security & Authentication
 - **Session-based authentication**: Cryptographically secure session tokens (64-char hex)
