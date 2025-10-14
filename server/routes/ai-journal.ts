@@ -1,0 +1,80 @@
+import { RequestHandler } from "express";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+});
+
+export const handleAnalyzeJournal: RequestHandler = async (req, res) => {
+  try {
+    const { text, targetLanguage } = req.body;
+
+    if (!text) {
+      return res.status(400).json({ error: "Text is required" });
+    }
+
+    const language = targetLanguage || "English";
+    
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: `You are a language learning assistant. Analyze the user's text for grammar, spelling, vocabulary, and language learning insights. Provide:
+1. Corrected version of the text
+2. List of specific corrections with explanations
+3. Vocabulary suggestions for language learners
+4. Overall feedback on their ${language} writing
+
+Format your response as JSON with this structure:
+{
+  "corrected": "corrected text here",
+  "corrections": [{"from": "original", "to": "corrected", "reason": "explanation"}],
+  "vocabulary": [{"word": "word", "meaning": "definition", "example": "example sentence"}],
+  "feedback": "overall encouraging feedback"
+}`
+        },
+        {
+          role: "user",
+          content: text
+        }
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0.3,
+    });
+
+    const result = JSON.parse(completion.choices[0].message.content || "{}");
+    res.json(result);
+  } catch (error) {
+    console.error("AI analysis error:", error);
+    res.status(500).json({ error: "Analysis failed" });
+  }
+};
+
+export const handleGeneratePrompts: RequestHandler = async (req, res) => {
+  try {
+    const { language, level } = req.body;
+    
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: `Generate 5 creative journaling prompts for ${level || "beginner"} ${language || "English"} language learners. Make them engaging and appropriate for their level.`
+        },
+        {
+          role: "user",
+          content: "Generate journaling prompts"
+        }
+      ],
+      temperature: 0.8,
+    });
+
+    const prompts = completion.choices[0].message.content?.split('\n').filter(p => p.trim().length > 0) || [];
+    res.json({ prompts });
+  } catch (error) {
+    console.error("Prompt generation error:", error);
+    res.status(500).json({ error: "Prompt generation failed" });
+  }
+};
