@@ -39,7 +39,6 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      {/* AI Journal Feature Added */}
       <section className="rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 p-5">
         <div className="flex items-center justify-between">
           <div>
@@ -55,28 +54,27 @@ export default function Dashboard() {
             <span className="text-sm font-semibold">7 day streak</span>
           </div>
         </div>
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <Link to="/challenge" className="block">
-            <Button className="w-full h-12 text-base font-semibold">
-              <Sparkles className="mr-2 size-5" /> Daily Challenge
-            </Button>
-          </Link>
+        <div className="mt-4 grid grid-cols-1 gap-3">
           <Link to="/journal" className="block">
-            <Button
-              variant="default"
-              className="w-full h-12 text-base font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-            >
-              <NotebookPen className="mr-2 size-5" /> AI Journal
+            <Button className="w-full h-14 text-lg font-bold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+              <NotebookPen className="mr-2 size-6" /> AI Journal - Write & Get Feedback
             </Button>
           </Link>
-          <Link to="/progress" className="block">
-            <Button
-              variant="secondary"
-              className="w-full h-12 text-base font-semibold"
-            >
-              <BarChart3 className="mr-2 size-5" /> View Progress
-            </Button>
-          </Link>
+          <div className="grid grid-cols-2 gap-3">
+            <Link to="/challenge" className="block">
+              <Button className="w-full h-12 text-base font-semibold">
+                <Sparkles className="mr-2 size-5" /> Daily Challenge
+              </Button>
+            </Link>
+            <Link to="/progress" className="block">
+              <Button
+                variant="secondary"
+                className="w-full h-12 text-base font-semibold"
+              >
+                <BarChart3 className="mr-2 size-5" /> View Progress
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -123,13 +121,13 @@ export default function Dashboard() {
 
       <section className="grid grid-cols-2 gap-3">
         <Link to="/journal" className="block col-span-2">
-          <Card className="rounded-2xl border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20">
+          <Card className="rounded-2xl border-2 border-purple-300 bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-950/30 dark:to-blue-950/30 shadow-lg">
             <CardHeader className="pb-2">
-              <CardTitle className="text-base flex items-center gap-2">
-                <NotebookPen className="size-5 text-purple-600" /> AI-Powered Journal
+              <CardTitle className="text-lg flex items-center gap-2 text-purple-700 dark:text-purple-300">
+                <NotebookPen className="size-6" /> ✨ AI-Powered Journal
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-0 text-sm text-muted-foreground">
+            <CardContent className="pt-0 text-sm font-medium">
               Write & get AI grammar corrections, vocabulary insights, and personalized feedback
             </CardContent>
           </Card>
