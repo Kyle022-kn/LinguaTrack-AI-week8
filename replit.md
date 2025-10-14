@@ -120,12 +120,14 @@ The app uses PostgreSQL with Drizzle ORM for user authentication and data persis
   - Loading states during authentication
 - **🎨 UI/UX Enhancements** - Better visual feedback with toast notifications for all auth operations
 - **🎮 GAME-LIKE PRACTICE EXPERIENCE** - Transformed AI Practice into a Duolingo-style game:
-  - ❤️ Hearts/Lives System - Start with 5 hearts, lose 1 per wrong answer
-  - 🎯 Visual Feedback - Correct answers bounce in green, wrong answers shake in red
-  - 🎉 Celebration Screen - Confetti and stats when completing exercises
-  - 🎨 Colorful UI - Game-like buttons with hover effects and animations
+  - ❤️ Hearts/Lives System - Start with 5 hearts, lose 1 per wrong answer, practice ends at 0 hearts
+  - 🎯 Visual Feedback - Correct answers bounce in green, wrong answers shake in red (custom animations)
+  - 🎉 Celebration Screen - Confetti burst (canvas-confetti) and stats when completing exercises successfully
+  - 🎨 Colorful UI - Game-like buttons with hover effects and smooth animations
   - 💪 Progress Tracking - Visual progress bar through exercises
   - ⚡ Immediate Feedback - Instant visual response to answers
+  - ✅ Success/Failure Flows - Streak updates only on successful completion, no rewards on heart depletion
+  - 🎊 Confetti Effect - Only triggers on successful completion (uses canvas-confetti library)
 
 ## Recent Changes (October 14, 2025) - Previous
 - Configured for Replit environment
