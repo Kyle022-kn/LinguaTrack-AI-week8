@@ -37,5 +37,16 @@ export function createServer() {
     return handleGetUser(req, res, next);
   });
 
+  // AI Journal routes
+  app.post("/api/ai/analyze-journal", async (req, res, next) => {
+    const { handleAnalyzeJournal } = await import("./routes/ai-journal");
+    return handleAnalyzeJournal(req, res, next);
+  });
+
+  app.post("/api/ai/generate-prompts", async (req, res, next) => {
+    const { handleGeneratePrompts } = await import("./routes/ai-journal");
+    return handleGeneratePrompts(req, res, next);
+  });
+
   return app;
 }
