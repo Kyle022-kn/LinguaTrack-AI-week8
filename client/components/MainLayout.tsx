@@ -55,6 +55,15 @@ export default function MainLayout() {
         <div className="mx-auto max-w-md px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             {location.pathname !== "/dashboard" && <BackButton />}
+            {location.pathname !== "/dashboard" && (
+              <Link 
+                to="/dashboard" 
+                className="size-9 rounded-xl bg-primary/10 hover:bg-primary/20 grid place-items-center transition-colors"
+                title="Go to Home"
+              >
+                <Home className="w-5 h-5 text-primary" />
+              </Link>
+            )}
             <Link to="/dashboard" className="flex items-center gap-2">
               <div className="size-8 rounded-xl bg-primary/10 grid place-items-center">
                 <Logo className="w-5 h-5 text-primary" />

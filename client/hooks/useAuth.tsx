@@ -9,10 +9,12 @@ export type User = {
   role: UserRole;
 };
 
+type AuthResult = { success: true } | { success: false; error: string };
+
 type AuthContextValue = {
   user: User | null;
-  login: (args: { email: string; password: string }) => Promise<boolean>;
-  register: (args: { email: string; password: string; role: UserRole; name: string }) => Promise<boolean>;
+  login: (args: { email: string; password: string }) => Promise<AuthResult>;
+  register: (args: { email: string; password: string; role: UserRole; name: string }) => Promise<AuthResult>;
   logout: () => void;
 };
 
@@ -54,16 +56,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const login = useCallback(async (args: { email: string; password: string }) => {
+  const login = useCallback(async (args: { email: string; password: string }): Promise<AuthResult> => {
     const supabase = getSupabase();
     if (supabase) {
       const { error } = await supabase.auth.signInWithPassword({ email: args.email, password: args.password });
-      if (error) return false;
+      if (error) return { success: false as const, error: error.message };
       const u = await loadProfile();
-      if (!u) return false;
+      if (!u) return { success: false as const, error: "Failed to load profile" };
       setUser(u);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
-      return true;
+      return { success: true as const };
     }
     
     try {
@@ -75,8 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (!response.ok) {
         const error = await response.json();
-        console.error("Login failed:", error);
-        return false;
+        return { success: false as const, error: error.error || "Login failed" };
       }
       
       const data = await response.json();
@@ -91,23 +92,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       };
       setUser(u);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
-      return true;
+      return { success: true as const };
     } catch (error) {
       console.error("Login error:", error);
-      return false;
+      return { success: false as const, error: "Network error. Please try again" };
     }
   }, []);
 
-  const register = useCallback(async (args: { email: string; password: string; role: UserRole; name: string }) => {
+  const register = useCallback(async (args: { email: string; password: string; role: UserRole; name: string }): Promise<AuthResult> => {
     const supabase = getSupabase();
     if (supabase) {
       const { data, error } = await supabase.auth.signUp({ email: args.email, password: args.password });
-      if (error || !data.user) return false;
+      if (error || !data.user) return { success: false as const, error: error?.message || "Registration failed" };
       await supabase.from("profiles").upsert({ id: data.user.id, email: args.email, role: args.role, name: args.name }).select();
       const u: User = { email: args.email, role: args.role, name: args.name };
       setUser(u);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
-      return true;
+      return { success: true as const };
     }
     
     try {
@@ -124,8 +125,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       if (!response.ok) {
         const error = await response.json();
-        console.error("Registration failed:", error);
-        return false;
+        return { success: false as const, error: error.error || "Registration failed" };
       }
       
       const data = await response.json();
@@ -140,10 +140,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       };
       setUser(u);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
-      return true;
+      return { success: true as const };
     } catch (error) {
       console.error("Registration error:", error);
-      return false;
+      return { success: false as const, error: "Network error. Please try again" };
     }
   }, []);
 
