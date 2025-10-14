@@ -73,11 +73,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify({ email: args.email, password: args.password }),
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        console.error("Login failed:", error);
-        return false;
-      }
+      if (!response.ok) return false;
       
       const data = await response.json();
       if (data.sessionToken) {
@@ -92,8 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(u);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
       return true;
-    } catch (error) {
-      console.error("Login error:", error);
+    } catch {
       return false;
     }
   }, []);
@@ -122,11 +117,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }),
       });
       
-      if (!response.ok) {
-        const error = await response.json();
-        console.error("Registration failed:", error);
-        return false;
-      }
+      if (!response.ok) return false;
       
       const data = await response.json();
       if (data.sessionToken) {
@@ -141,8 +132,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(u);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
       return true;
-    } catch (error) {
-      console.error("Registration error:", error);
+    } catch {
       return false;
     }
   }, []);

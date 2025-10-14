@@ -3,19 +3,7 @@ import OpenAI from "openai";
 import { requireAuth, rateLimit } from "../middleware/auth";
 
 const router = express.Router();
-
-// Lazy initialization to ensure environment variables are loaded
-let openai: OpenAI | null = null;
-function getOpenAI() {
-  if (!openai) {
-    // This is using Replit's AI Integrations service, which provides OpenAI-compatible API access without requiring your own OpenAI API key.
-    openai = new OpenAI({
-      baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-      apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY
-    });
-  }
-  return openai;
-}
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const exerciseLimiter = rateLimit(15, 60 * 1000);
 
@@ -42,8 +30,8 @@ router.post("/generate", requireAuth, exerciseLimiter, async (req, res) => {
 
     const prompt = buildPrompt(language, type, difficulty, count);
     
-    const completion = await getOpenAI().chat.completions.create({
-      model: "gpt-5-mini", // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
@@ -54,8 +42,7 @@ router.post("/generate", requireAuth, exerciseLimiter, async (req, res) => {
           content: prompt
         }
       ],
-      response_format: { type: "json_object" },
-      max_completion_tokens: 8192,
+      temperature: 0.8,
     });
 
     const content = completion.choices[0].message.content || "[]";
