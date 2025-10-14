@@ -30,6 +30,7 @@ import Profile from "./pages/Profile";
 import Support from "./pages/Support";
 import Journal from "./pages/Journal";
 import Settings from "./pages/Settings";
+import AIPractice from "./pages/AIPractice";
 import MainLayout from "@/components/MainLayout";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 
@@ -67,6 +68,7 @@ const App = () => (
                 <Route element={<MainLayout />}>
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/challenge" element={<Challenge />} />
+                  <Route path="/ai-practice" element={<AIPractice />} />
                   <Route path="/lessons" element={<Lessons />} />
                   <Route path="/lessons/:lang" element={<LessonDetail />} />
                   <Route path="/progress" element={<Progress />} />

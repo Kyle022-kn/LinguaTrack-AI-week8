@@ -75,5 +75,17 @@ export function createServer() {
     });
   });
 
+  // AI Exercise routes (protected with auth and rate limiting - 15 requests/minute)
+  app.use("/api/ai/exercises", async (req, res, next) => {
+    const exerciseRouter = await import("./routes/ai-exercises");
+    return exerciseRouter.default(req, res, next);
+  });
+
+  // Progress and XP routes (protected with auth)
+  app.use("/api/progress", async (req, res, next) => {
+    const progressRouter = await import("./routes/progress");
+    return progressRouter.default(req, res, next);
+  });
+
   return app;
 }

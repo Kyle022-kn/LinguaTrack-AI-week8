@@ -55,23 +55,20 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="mt-4 grid grid-cols-1 gap-3">
-          <Link to="/journal" className="block">
-            <Button className="w-full h-14 text-lg font-bold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
-              <NotebookPen className="mr-2 size-6" /> AI Journal - Write & Get Feedback
+          <Link to="/ai-practice" className="block">
+            <Button className="w-full h-16 text-xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700">
+              <Sparkles className="mr-2 size-7" /> AI-Powered Practice
             </Button>
           </Link>
           <div className="grid grid-cols-2 gap-3">
+            <Link to="/journal" className="block">
+              <Button className="w-full h-12 text-base font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+                <NotebookPen className="mr-2 size-5" /> AI Journal
+              </Button>
+            </Link>
             <Link to="/challenge" className="block">
               <Button className="w-full h-12 text-base font-semibold">
                 <Sparkles className="mr-2 size-5" /> Daily Challenge
-              </Button>
-            </Link>
-            <Link to="/progress" className="block">
-              <Button
-                variant="secondary"
-                className="w-full h-12 text-base font-semibold"
-              >
-                <BarChart3 className="mr-2 size-5" /> View Progress
               </Button>
             </Link>
           </div>
