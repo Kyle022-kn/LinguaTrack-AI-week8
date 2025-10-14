@@ -17,6 +17,8 @@ import {
   Loader2,
   BookOpen,
   Zap,
+  Heart,
+  PartyPopper,
 } from "lucide-react";
 
 interface Exercise {
@@ -44,6 +46,9 @@ export default function AIPractice() {
   const [xp, setXP] = useState(0);
   const [level, setLevel] = useState(1);
   const [streak, setStreak] = useState(0);
+  const [hearts, setHearts] = useState(5);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [answerAnimation, setAnswerAnimation] = useState<"correct" | "incorrect" | null>(null);
 
   const exerciseTypes = [
     { value: "vocab", label: "Vocabulary", icon: "📚" },
@@ -115,6 +120,8 @@ export default function AIPractice() {
       setScore(0);
       setUserAnswer("");
       setShowResult(false);
+      setHearts(5);
+      setShowCelebration(false);
       toast.success("AI exercises generated!", { description: `${data.exercises.length} questions ready` });
     } catch (error) {
       toast.error("Failed to generate exercises", { description: "Please try again" });
@@ -136,6 +143,19 @@ export default function AIPractice() {
     if (correct) {
       setScore((s) => s + 1);
       addXP(20);
+      setAnswerAnimation("correct");
+      setTimeout(() => setAnswerAnimation(null), 600);
+    } else {
+      setHearts((h) => Math.max(0, h - 1));
+      setAnswerAnimation("incorrect");
+      setTimeout(() => setAnswerAnimation(null), 600);
+      
+      if (hearts <= 1) {
+        setTimeout(() => {
+          toast.error("Out of hearts!", { description: "Practice session ended" });
+          finishPractice();
+        }, 1500);
+      }
     }
   };
 
@@ -182,15 +202,28 @@ export default function AIPractice() {
         headers: { Authorization: `Bearer ${sessionToken}` },
       });
       fetchStreak();
-      toast.success("Practice Complete!", {
-        description: `Score: ${score}/${exercises.length}`,
-      });
-      setExercises([]);
-      setCurrentIndex(0);
-      setScore(0);
+      
+      if (hearts > 0) {
+        setShowCelebration(true);
+      } else {
+        toast.error("Practice ended", {
+          description: `Score: ${score}/${exercises.length}`,
+        });
+        setExercises([]);
+        setCurrentIndex(0);
+        setScore(0);
+      }
     } catch (error) {
       console.error("Failed to update streak:", error);
     }
+  };
+  
+  const restartPractice = () => {
+    setShowCelebration(false);
+    setExercises([]);
+    setCurrentIndex(0);
+    setScore(0);
+    setHearts(5);
   };
 
   const currentExercise = exercises[currentIndex];
@@ -198,8 +231,54 @@ export default function AIPractice() {
 
   return (
     <div className="space-y-6">
+      {/* Celebration Screen */}
+      {showCelebration && (
+        <Card className="rounded-2xl border-4 border-yellow-400 bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-950/20 dark:to-orange-950/20">
+          <CardContent className="p-8 text-center space-y-4">
+            <div className="text-6xl animate-bounce mb-4">🎉</div>
+            <h2 className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">
+              Lesson Complete!
+            </h2>
+            <div className="space-y-2">
+              <div className="text-5xl font-extrabold text-primary">{score}/{exercises.length}</div>
+              <p className="text-muted-foreground">Questions Correct</p>
+            </div>
+            <div className="grid grid-cols-2 gap-4 max-w-xs mx-auto mt-6">
+              <div className="p-4 rounded-xl bg-white dark:bg-card">
+                <div className="text-2xl font-bold text-green-600">+{score * 20} XP</div>
+                <div className="text-xs text-muted-foreground">Earned</div>
+              </div>
+              <div className="p-4 rounded-xl bg-white dark:bg-card">
+                <div className="text-2xl font-bold text-amber-600">{hearts} ❤️</div>
+                <div className="text-xs text-muted-foreground">Hearts Left</div>
+              </div>
+            </div>
+            <Button onClick={restartPractice} className="w-full max-w-xs mt-6 h-12 text-lg font-bold">
+              <Sparkles className="mr-2 size-5" /> Practice Again
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Hearts Display */}
+      {!showCelebration && exercises.length > 0 && (
+        <div className="flex items-center justify-center gap-1 p-3 bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-950/20 dark:to-pink-950/20 rounded-2xl">
+          {[...Array(5)].map((_, i) => (
+            <Heart
+              key={i}
+              className={`size-8 ${
+                i < hearts
+                  ? "fill-red-500 text-red-500 animate-pulse"
+                  : "fill-gray-300 text-gray-300 dark:fill-gray-700 dark:text-gray-700"
+              }`}
+            />
+          ))}
+        </div>
+      )}
+
       {/* Header with Stats */}
-      <div className="grid grid-cols-3 gap-3">
+      {!showCelebration && (
+        <div className="grid grid-cols-3 gap-3">
         <Card className="rounded-2xl">
           <CardContent className="p-4 flex items-center gap-3">
             <div className="size-10 rounded-full bg-primary/10 grid place-items-center">
@@ -236,9 +315,10 @@ export default function AIPractice() {
           </CardContent>
         </Card>
       </div>
+      )}
 
       {/* Setup Section */}
-      {exercises.length === 0 && (
+      {!showCelebration && exercises.length === 0 && (
         <Card className="rounded-2xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -330,7 +410,7 @@ export default function AIPractice() {
       )}
 
       {/* Exercise Section */}
-      {exercises.length > 0 && currentExercise && (
+      {!showCelebration && exercises.length > 0 && currentExercise && (
         <Card className="rounded-2xl">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -350,15 +430,15 @@ export default function AIPractice() {
             {!showResult && (
               <>
                 {currentExercise.options ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 gap-3">
                     {currentExercise.options.map((option, idx) => (
                       <button
                         key={idx}
                         onClick={() => setUserAnswer(option)}
-                        className={`p-4 rounded-xl border-2 transition-all text-left ${
+                        className={`p-4 rounded-2xl border-4 transition-all text-left font-medium text-base ${
                           userAnswer === option
-                            ? "border-primary bg-primary/10"
-                            : "border-transparent bg-accent hover:border-primary/30"
+                            ? "border-primary bg-primary/20 scale-105 shadow-lg"
+                            : "border-gray-200 dark:border-gray-700 bg-white dark:bg-card hover:border-primary/50 hover:scale-102 hover:shadow-md"
                         }`}
                       >
                         {option}
@@ -372,16 +452,16 @@ export default function AIPractice() {
                     onChange={(e) => setUserAnswer(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && userAnswer && checkAnswer()}
                     placeholder="Type your answer..."
-                    className="w-full p-4 rounded-xl border bg-background"
+                    className="w-full p-4 rounded-2xl border-4 border-gray-200 dark:border-gray-700 bg-white dark:bg-card text-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                   />
                 )}
 
                 <Button
                   onClick={checkAnswer}
                   disabled={!userAnswer}
-                  className="w-full h-12"
+                  className="w-full h-14 text-lg font-bold rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 disabled:from-gray-400 disabled:to-gray-500 shadow-lg hover:shadow-xl transition-all"
                 >
-                  <Check className="size-5 mr-2" /> Check Answer
+                  <Check className="size-6 mr-2" /> Check Answer
                 </Button>
               </>
             )}
@@ -390,8 +470,8 @@ export default function AIPractice() {
               <div
                 className={`p-4 rounded-xl border-2 ${
                   isCorrect
-                    ? "bg-green-50 dark:bg-green-950/20 border-green-500"
-                    : "bg-red-50 dark:bg-red-950/20 border-red-500"
+                    ? "bg-green-50 dark:bg-green-950/20 border-green-500 animate-bounce-in"
+                    : "bg-red-50 dark:bg-red-950/20 border-red-500 animate-shake"
                 }`}
               >
                 <div className="flex items-center gap-2 mb-2">
@@ -418,14 +498,17 @@ export default function AIPractice() {
                       : currentExercise.answer}
                   </p>
                 )}
-                <Button onClick={nextQuestion} className="w-full mt-4">
+                <Button 
+                  onClick={nextQuestion} 
+                  className="w-full h-14 mt-4 text-lg font-bold rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all"
+                >
                   {currentIndex < exercises.length - 1 ? (
                     <>
-                      Next Question <ChevronRight className="size-5 ml-2" />
+                      Next Question <ChevronRight className="size-6 ml-2" />
                     </>
                   ) : (
                     <>
-                      Finish Practice <Star className="size-5 ml-2" />
+                      Finish Practice <Star className="size-6 ml-2" />
                     </>
                   )}
                 </Button>
