@@ -17,11 +17,13 @@ function LanguageBlock({ lang, topics }: { lang: Language; topics: string[] }) {
   return (
     <Card className="rounded-2xl overflow-hidden">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">{lang.emoji} {lang.name}</CardTitle>
+        <CardTitle className="text-base">
+          {lang.emoji} {lang.name}
+        </CardTitle>
       </CardHeader>
       <CardContent className="pt-0 space-y-2">
         <ul className="text-sm text-muted-foreground list-disc pl-5">
-          {(topics.length ? topics : BASE_TOPICS).slice(0,5).map((t) => (
+          {(topics.length ? topics : BASE_TOPICS).slice(0, 5).map((t) => (
             <li key={t}>{t}</li>
           ))}
         </ul>
@@ -30,7 +32,9 @@ function LanguageBlock({ lang, topics }: { lang: Language; topics: string[] }) {
             <Button className="w-full">Overview</Button>
           </Link>
           <Link to={`/lessons/${lang.key}`} className="flex-1">
-            <Button variant="secondary" className="w-full">Practice</Button>
+            <Button variant="secondary" className="w-full">
+              Practice
+            </Button>
           </Link>
         </div>
       </CardContent>
@@ -44,12 +48,13 @@ export default function Lessons() {
     const sb = getSupabase();
     if (!sb) return;
     (async () => {
-      const { data, error } = await sb.from('lessons').select('language,title');
+      const { data, error } = await sb.from("lessons").select("language,title");
       if (error) return;
       const map: Record<string, string[]> = {};
       for (const row of data || []) {
         map[row.language] = map[row.language] || [];
-        if (!map[row.language].includes(row.title)) map[row.language].push(row.title);
+        if (!map[row.language].includes(row.title))
+          map[row.language].push(row.title);
       }
       setTopicsMap(map);
     })();
@@ -59,7 +64,9 @@ export default function Lessons() {
     <div className="space-y-4">
       <div>
         <h1 className="text-xl font-bold tracking-tight">Lessons</h1>
-        <p className="text-sm text-muted-foreground">Topic overviews, practice and quizzes by language.</p>
+        <p className="text-sm text-muted-foreground">
+          Topic overviews, practice and quizzes by language.
+        </p>
       </div>
       <div className="grid grid-cols-1 gap-3">
         {LANGUAGES.map((l) => (
