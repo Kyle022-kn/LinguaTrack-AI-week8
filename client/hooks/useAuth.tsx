@@ -72,10 +72,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: args.email, password: args.password }),
       });
-      
+
       if (!response.ok) return false;
       
       const data = await response.json();
+      if (data.sessionToken) {
+        localStorage.setItem("ltai_session", data.sessionToken);
+      }
+      
       const u: User = { 
         email: data.user.email, 
         role: data.user.role as UserRole, 
@@ -116,6 +120,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!response.ok) return false;
       
       const data = await response.json();
+      if (data.sessionToken) {
+        localStorage.setItem("ltai_session", data.sessionToken);
+      }
+      
       const u: User = { 
         email: data.user.email, 
         role: data.user.role as UserRole, 
@@ -134,6 +142,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (supabase) supabase.auth.signOut();
     setUser(null);
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem("ltai_session");
   }, []);
 
   const value = useMemo(() => ({ user, login, register, logout }), [user, login, register, logout]);

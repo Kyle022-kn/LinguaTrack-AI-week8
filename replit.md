@@ -81,8 +81,9 @@ The app uses PostgreSQL with Drizzle ORM for user authentication and data persis
 - Database config in `drizzle.config.ts`
 
 **Authentication API:**
-- `POST /api/auth/register` - Create new user account
-- `POST /api/auth/login` - Authenticate user
+- `POST /api/auth/register` - Create new user account (returns user + sessionToken)
+- `POST /api/auth/login` - Authenticate user (returns user + sessionToken)
+- `POST /api/auth/logout` - Revoke session token
 - `GET /api/auth/user/:id` - Get user by ID
 
 **AI Journal API (Protected):**
@@ -103,6 +104,13 @@ The app uses PostgreSQL with Drizzle ORM for user authentication and data persis
 - **Added rich topic content with detailed learning materials for all languages**
 - **Implemented PWA capabilities for mobile app experience (manifest, service worker, install prompt)**
 - **Added authentication and rate limiting to AI endpoints (10 requests/min for analysis, 5 requests/min for prompts)**
+
+## Security & Authentication
+- **Session-based authentication**: Cryptographically secure session tokens (64-char hex)
+- **Session management**: Server-side session storage with 24-hour expiration
+- **Protected AI endpoints**: Require valid session token + database user verification
+- **Rate limiting**: Per-user limits (10 req/min analysis, 5 req/min prompts)
+- **Role enforcement**: Server enforces "learner" role for all new registrations
 
 ## Configuration Notes
 - The Vite dev server is configured to work with Replit's proxy system
