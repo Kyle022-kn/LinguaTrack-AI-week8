@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/ThemeToggle";
 import Logo from "@/components/Logo";
 import BackButton from "@/components/BackButton";
+import PWAInstall from "@/components/PWAInstall";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,6 +50,7 @@ export default function MainLayout() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/40 text-foreground">
+      <PWAInstall />
       <header className="sticky top-0 z-20 backdrop-blur supports-[backdrop-filter]:bg-background/70 border-b">
         <div className="mx-auto max-w-md px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -93,12 +95,12 @@ export default function MainLayout() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-md px-4 pb-28 pt-4">
+      <main className="mx-auto max-w-md px-4 pb-28 pt-4 sm:pb-4">
         <Outlet />
       </main>
 
       {location.pathname !== "/login" && (
-        <nav className="fixed inset-x-0 bottom-0 z-20 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75">
+        <nav className="fixed inset-x-0 bottom-0 z-20 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75 sm:hidden">
           <div className="mx-auto max-w-md grid grid-cols-3 p-2 gap-2">
             {nav.map((item) => {
               const Icon = item.icon;
