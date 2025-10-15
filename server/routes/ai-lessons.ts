@@ -38,7 +38,7 @@ router.post("/generate", requireAuth, lessonLimiter, async (req, res) => {
     const prompt = buildLessonPrompt(language, topic, level);
     
     const completion = await getOpenAI().chat.completions.create({
-      model: "gpt-5-mini",
+      model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",

@@ -22,6 +22,7 @@
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
+    "@huggingface/inference": "^4.11.2",
     "@neondatabase/serverless": "^1.0.2",
     "@supabase/supabase-js": "^2.75.0",
     "@types/bcrypt": "^6.0.0",

@@ -43,7 +43,7 @@ router.post("/generate", requireAuth, exerciseLimiter, async (req, res) => {
     const prompt = buildPrompt(language, type, difficulty, count);
     
     const completion = await getOpenAI().chat.completions.create({
-      model: "gpt-5-mini", // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
+      model: "gpt-3.5-turbo", // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
       messages: [
         {
           role: "system",
