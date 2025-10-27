@@ -1,28 +1,59 @@
-# Logs
-logs
-*.log
+# ===========================================
+# 🌱 Environment files
+# ===========================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ===========================================
+# 🧩 Node.js
+# ===========================================
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
+package-lock.json
 
-node_modules
-dist
-dist-ssr
-*.local
+# ===========================================
+# ⚛️ React / Frontend build
+# ===========================================
+build/
+dist/
+.cache/
+.next/
+out/
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# ===========================================
+# 🧰 Logs and temporary files
+# ===========================================
+*.log
+*.tmp
+*.temp
+*.pid
+*.seed
+*.bak
+
+
+# 💻 IDE / Editor files
+
+.vscode/
+.idea/
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+Thumbs.db
 
-.config/
-!.env
-.env
+
+# 🧪 Testing / Coverage
+
+coverage/
+jest-cache/
+jest-dist/
+.nyc_output/
+
+
+
+*.swp
+*.swo
+*.orig
