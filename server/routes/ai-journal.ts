@@ -48,7 +48,7 @@ Format your response as JSON with this structure:
         }
       ],
       response_format: { type: "json_object" },
-      max_completion_tokens: 8192,
+      max_completion_tokens: 1024,
     });
 
     const result = JSON.parse(completion.choices[0].message.content || "{}");
@@ -75,7 +75,7 @@ export const handleGeneratePrompts: RequestHandler = async (req, res) => {
           content: "Generate journaling prompts"
         }
       ],
-      max_completion_tokens: 8192,
+      max_completion_tokens: 1024,
     });
 
     const prompts = completion.choices[0].message.content?.split('\n').filter(p => p.trim().length > 0) || [];
