@@ -55,7 +55,7 @@ router.post("/generate", requireAuth, exerciseLimiter, async (req, res) => {
         }
       ],
       response_format: { type: "json_object" },
-      max_completion_tokens: 8192,
+      max_completion_tokens: 1024,
     });
 
     const content = completion.choices[0].message.content || "[]";
